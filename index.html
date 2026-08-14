@@ -89,6 +89,8 @@ const UI = {
     library: "Bibliothèque", added: "Ajoutée", addFromLib: "Choisir dans la bibliothèque",
     createTask: "Créer une tâche", emptyTasks: "Aucune tâche pour l'instant. Touche le + pour en ajouter.",
     cancel: "Annuler", addTask: "Ajouter une tâche",
+    welcomeTitle: "Bienvenue chez vous", welcomeHint: "Commencez par ajouter les personnes qui vivent ici. Chacune aura sa goutte et ses points.",
+    addFamily: "Ajouter votre famille",
     myMedia: "Mes photos et vidéos", addMedia: "Ajouter", noMedia: "Aucune pour l'instant",
     videoTooBig: "Vidéo trop lourde (3 Mo maximum). Filme plus court.",
     errorFull: "Mémoire pleine. Supprime des photos ou des vidéos.",
@@ -123,6 +125,8 @@ const UI = {
     library: "Library", added: "Added", addFromLib: "Pick from the library",
     createTask: "Create a task", emptyTasks: "No tasks yet. Tap + to add some.",
     cancel: "Cancel", addTask: "Add a task",
+    welcomeTitle: "Welcome home", welcomeHint: "Start by adding the people who live here. Each one gets their own drop and points.",
+    addFamily: "Add your family",
     myMedia: "My photos and videos", addMedia: "Add", noMedia: "None yet",
     videoTooBig: "Video too large (3 MB max). Record a shorter one.",
     errorFull: "Storage full. Remove some photos or videos.",
@@ -157,6 +161,8 @@ const UI = {
     library: "ספרייה", added: "נוספה", addFromLib: "בחירה מהספרייה",
     createTask: "יצירת משימה", emptyTasks: "אין עדיין משימות. הקישי על + כדי להוסיף.",
     cancel: "ביטול", addTask: "הוספת משימה",
+    welcomeTitle: "ברוכים הבאים הביתה", welcomeHint: "התחילי בהוספת בני הבית. לכל אחד תהיה טיפה ונקודות משלו.",
+    addFamily: "הוספת המשפחה",
     myMedia: "התמונות והסרטונים שלי", addMedia: "הוספה", noMedia: "אין עדיין",
     videoTooBig: "הסרטון כבד מדי (3 מ״ב לכל היותר).",
     errorFull: "אין מקום. מחקי תמונות או סרטונים.",
@@ -392,6 +398,7 @@ function App() {
   const mediaRef = useRef(null);
   const [mediaFor, setMediaFor] = useState(null);
   const [swipe, setSwipe] = useState(null);
+  const touchRef = useRef(null);
   const [err, setErr] = useState(null);
   const [editing, setEditing] = useState(null);
   const [editVal, setEditVal] = useState("");
@@ -402,6 +409,7 @@ function App() {
   const [newTaskName, setNewTaskName] = useState("");
   const [addMenu, setAddMenu] = useState(false);
   const [libOpen, setLibOpen] = useState(false);
+  const [showAddMember, setShowAddMember] = useState(false);
   const fileRef = useRef(null);
 
   const t = UI[lang];
@@ -670,18 +678,32 @@ function App() {
         </div>
 
         <div
-          onTouchStart={(e) => setSwipe({ id: task.id, x0: e.touches[0].clientX, dx: 0 })}
+          onTouchStart={(e) => {
+            /* on note le départ sans déclencher de rendu : sinon un simple
+               tap redessinerait l'étiquette et le clic serait perdu */
+            touchRef.current = { id: task.id, x0: e.touches[0].clientX, y0: e.touches[0].clientY, live: false };
+          }}
           onTouchMove={(e) => {
-            if (!swipe || swipe.id !== task.id) return;
-            const d = e.touches[0].clientX - swipe.x0;
-            setSwipe({ ...swipe, dx: Math.max(-150, Math.min(0, rtl ? -d : d)) });
+            const r = touchRef.current;
+            if (!r || r.id !== task.id) return;
+            const dxRaw = e.touches[0].clientX - r.x0;
+            const dyRaw = e.touches[0].clientY - r.y0;
+            /* on n'entre en mode glissement que si le geste est franchement
+               horizontal — sinon c'est un défilement, ou un simple tap */
+            if (!r.live) {
+              if (Math.abs(dxRaw) < 12 || Math.abs(dxRaw) < Math.abs(dyRaw)) return;
+              r.live = true;
+            }
+            setSwipe({ id: task.id, dx: Math.max(-150, Math.min(0, rtl ? -dxRaw : dxRaw)) });
           }}
           onTouchEnd={() => {
-            if (swipe && swipe.id === task.id && swipe.dx < -90) {
+            const r = touchRef.current;
+            touchRef.current = null;
+            if (r && r.live && swipe && swipe.id === task.id && swipe.dx < -90) {
               setTasks((ts) => ts.filter((x) => x.id !== task.id));
               if (openTask === task.id) setOpenTask(null);
             }
-            setSwipe(null);
+            if (r && r.live) setSwipe(null);
           }}
           className="flex items-center gap-3 rounded-2xl p-2"
           style={{
@@ -730,12 +752,52 @@ function App() {
           )
         ) : (
           <button onClick={() => setOpenTask(openTask === task.id ? null : task.id)}
-            className="rounded-full px-3 py-1.5 text-xs font-extrabold"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-extrabold"
             style={{ background: openTask === task.id ? C.violet : C.gris, color: openTask === task.id ? "#fff" : C.encreDoux }}>
-            {openTask === task.id ? "▲" : "✎"}
+            {openTask === task.id ? "✕" : "✎"}
           </button>
         )}
         </div>
+      </div>
+    );
+  };
+
+  /* carte carrée : grande image, libellé dessous.
+     Faite, elle passe en gris clair avec un grand V. */
+  const cardEl = (task, i, mom) => {
+    const done = isDone(task, mom);
+    const col = ACCENTS[i % 3];
+    return (
+      <div key={task.id} className="w-[46%] shrink-0 snap-start pt-1">
+        <button onClick={() => (done ? setZoom(task) : logTask(task, mom))}
+          className="relative block w-full overflow-hidden rounded-3xl transition active:scale-95"
+          style={{ background: C.blanc, border: `3px solid ${done ? C.encreDoux : col}` }}>
+          <img src={src(task)} alt="" className="block aspect-square w-full object-cover"
+            style={{ filter: done ? "grayscale(1) contrast(.85)" : "none", opacity: done ? 0.62 : 1 }} />
+          {done && (
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <span style={{
+                color: "#fff", fontSize: "62px", fontWeight: 900, lineHeight: 1,
+                textShadow: `0 3px 10px rgba(16,27,45,.55)`,
+              }}>✓</span>
+            </span>
+          )}
+          {!done && (
+            <span className="absolute end-2 top-2 rounded-full px-2.5 py-1 text-[11px] font-extrabold"
+              style={{ background: col, color: "#fff" }}>
+              +{task.points}
+            </span>
+          )}
+        </button>
+        <p className="mt-1.5 px-1 text-center text-[13px] font-extrabold leading-tight"
+          style={{ color: done ? C.encreDoux : C.encre }}>
+          {label(task)}
+        </p>
+        {assignOf(task) === "all" && members.length > 0 && (
+          <p className="text-center text-[10px] font-bold" style={{ color: C.encreDoux }}>
+            {doneCount(task, mom)}/{members.length}
+          </p>
+        )}
       </div>
     );
   };
@@ -744,8 +806,9 @@ function App() {
     items.length === 0 ? null : (
       <section className="mt-5">
         <Titre color={color}>{title}</Titre>
-        <div className="flex flex-col gap-2">
-          {items.map((task, i) => <React.Fragment key={task.id}>{rowEl(task, i + off, "log", mom)}</React.Fragment>)}
+        {/* on fait défiler les tâches vers la gauche */}
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 pt-1">
+          {items.map((task, i) => cardEl(task, i + off, mom))}
         </div>
       </section>
     );
@@ -893,6 +956,12 @@ function App() {
             {t.remove}
           </button>
         </div>
+
+        <button onClick={() => setOpenTask(null)}
+          className="mt-3 w-full rounded-2xl py-3 text-sm font-extrabold"
+          style={{ background: C.turquoise, color: "#fff" }}>
+          {t.close}
+        </button>
       </div>
     );
   };
@@ -918,7 +987,23 @@ function App() {
           </div>
         </header>
 
-        {needsSetup ? (
+        {needsSetup && !showAddMember ? (
+          /* première ouverture : une invitation, pas un formulaire */
+          <section className="mt-10 flex flex-col items-center text-center">
+            <div className="mb-5 flex gap-1">
+              <Goutte color={C.turquoise} size={64} />
+              <Goutte color={C.violet} size={52} />
+              <Goutte color={C.orange} size={44} />
+            </div>
+            <h2 className="text-2xl font-black leading-tight" style={titre}>{t.welcomeTitle}</h2>
+            <p className="mt-2 max-w-xs text-sm" style={{ color: C.encreDoux }}>{t.welcomeHint}</p>
+            <button onClick={() => setShowAddMember(true)}
+              className="mt-7 w-full rounded-2xl py-4 text-base font-extrabold transition active:scale-[.98]"
+              style={{ background: C.turquoise, color: "#fff" }}>
+              + {t.addFamily}
+            </button>
+          </section>
+        ) : needsSetup ? (
           <section className="mt-8">
             <h2 className="text-xl font-black" style={titre}>{t.setupTitle}</h2>
             <p className="mt-1 text-sm" style={{ color: C.encreDoux }}>{t.setupHint}</p>
