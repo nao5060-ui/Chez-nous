@@ -89,8 +89,17 @@ const UI = {
     library: "Bibliothèque", added: "Ajoutée", addFromLib: "Choisir dans la bibliothèque",
     createTask: "Créer une tâche", emptyTasks: "Aucune tâche pour l'instant. Touche le + pour en ajouter.",
     cancel: "Annuler", addTask: "Ajouter une tâche",
+    overview: "Vue d'ensemble", tasksDone: "tâches cette semaine",
+    addMore: "Ajouter d'autres personnes à la famille",
+    noTasksYet: "Aucune tâche prévue pour l'instant", goAddTasks: "Choisir des tâches",
+    overviewHint: "Les points repartent de zéro chaque lundi.",
     welcomeTitle: "Bienvenue chez vous", welcomeHint: "Commencez par ajouter les personnes qui vivent ici. Chacune aura sa goutte et ses points.",
-    addFamily: "Ajouter votre famille",
+    addFamily: "Ajouter votre famille", begin: "Commencer", next: "Suivant", finish: "C'est parti",
+    skip: "Passer cette étape", stepOf: "Étape {n} sur 2",
+    setupTasks: "Vos premières tâches", setupTasksHint: "Choisissez celles que votre foyer fait vraiment. Rien n'est figé.",
+    laterMembers: "Plus tard, vous gérerez les membres dans l'onglet Réglages.",
+    laterTasks: "Plus tard, vous ajouterez ou modifierez les tâches dans l'onglet Tâches.",
+    whoChecks: "Qui coche ?",
     myMedia: "Mes photos et vidéos", addMedia: "Ajouter", noMedia: "Aucune pour l'instant",
     videoTooBig: "Vidéo trop lourde (3 Mo maximum). Filme plus court.",
     errorFull: "Mémoire pleine. Supprime des photos ou des vidéos.",
@@ -125,8 +134,17 @@ const UI = {
     library: "Library", added: "Added", addFromLib: "Pick from the library",
     createTask: "Create a task", emptyTasks: "No tasks yet. Tap + to add some.",
     cancel: "Cancel", addTask: "Add a task",
+    overview: "Overview", tasksDone: "tasks this week",
+    addMore: "Add more people to the family",
+    noTasksYet: "No tasks planned yet", goAddTasks: "Pick some tasks",
+    overviewHint: "Points reset every Monday.",
     welcomeTitle: "Welcome home", welcomeHint: "Start by adding the people who live here. Each one gets their own drop and points.",
-    addFamily: "Add your family",
+    addFamily: "Add your family", begin: "Get started", next: "Next", finish: "Let's go",
+    skip: "Skip this step", stepOf: "Step {n} of 2",
+    setupTasks: "Your first tasks", setupTasksHint: "Pick the ones your home actually does. Nothing is set in stone.",
+    laterMembers: "Later, you'll manage members in the Settings tab.",
+    laterTasks: "Later, you'll add or edit tasks in the Tasks tab.",
+    whoChecks: "Who's checking?",
     myMedia: "My photos and videos", addMedia: "Add", noMedia: "None yet",
     videoTooBig: "Video too large (3 MB max). Record a shorter one.",
     errorFull: "Storage full. Remove some photos or videos.",
@@ -161,8 +179,17 @@ const UI = {
     library: "ספרייה", added: "נוספה", addFromLib: "בחירה מהספרייה",
     createTask: "יצירת משימה", emptyTasks: "אין עדיין משימות. הקישי על + כדי להוסיף.",
     cancel: "ביטול", addTask: "הוספת משימה",
+    overview: "מבט כללי", tasksDone: "משימות השבוע",
+    addMore: "להוסיף עוד בני משפחה",
+    noTasksYet: "אין עדיין משימות מתוכננות", goAddTasks: "לבחור משימות",
+    overviewHint: "הנקודות מתאפסות בכל יום שני.",
     welcomeTitle: "ברוכים הבאים הביתה", welcomeHint: "התחילי בהוספת בני הבית. לכל אחד תהיה טיפה ונקודות משלו.",
-    addFamily: "הוספת המשפחה",
+    addFamily: "הוספת המשפחה", begin: "מתחילים", next: "הבא", finish: "יוצאים לדרך",
+    skip: "לדלג", stepOf: "שלב {n} מתוך 2",
+    setupTasks: "המשימות הראשונות", setupTasksHint: "בחרי את מה שהבית שלך באמת עושה.",
+    laterMembers: "בהמשך תנהלי את בני הבית בלשונית הגדרות.",
+    laterTasks: "בהמשך תוסיפי או תערכי משימות בלשונית משימות.",
+    whoChecks: "מי מסמן?",
     myMedia: "התמונות והסרטונים שלי", addMedia: "הוספה", noMedia: "אין עדיין",
     videoTooBig: "הסרטון כבד מדי (3 מ״ב לכל היותר).",
     errorFull: "אין מקום. מחקי תמונות או סרטונים.",
@@ -409,7 +436,8 @@ function App() {
   const [newTaskName, setNewTaskName] = useState("");
   const [addMenu, setAddMenu] = useState(false);
   const [libOpen, setLibOpen] = useState(false);
-  const [showAddMember, setShowAddMember] = useState(false);
+  const [step, setStep] = useState(0);
+  const [openFold, setOpenFold] = useState(null);
   const fileRef = useRef(null);
 
   const t = UI[lang];
@@ -437,6 +465,7 @@ function App() {
           setLog(d.log || []);
           setRewards(d.rewards || []);
           setActiveId(d.members?.[0]?.id || null);
+          setStep(d.step != null ? d.step : (d.members?.length ? 3 : 0));
         }
       } catch (e) {}
       /* les médias vivent dans leur propre entrée : ils sont lourds
@@ -453,10 +482,10 @@ function App() {
   useEffect(() => {
     if (!ready) return;
     (async () => {
-      try { localStorage.setItem(STORE_KEY, JSON.stringify({ lang, members, tasks, log, rewards })); }
+      try { localStorage.setItem(STORE_KEY, JSON.stringify({ lang, members, tasks, log, rewards, step })); }
       catch (e) { setErr(t.errorSave); setTimeout(() => setErr(null), 2500); }
     })();
-  }, [lang, members, tasks, log, rewards, ready]);
+  }, [lang, members, tasks, log, rewards, step, ready]);
 
   useEffect(() => {
     if (!ready) return;
@@ -654,7 +683,22 @@ function App() {
   if (!ready)
     return <div className="flex min-h-screen items-center justify-center" style={{ background: C.gris, color: C.encreDoux }}>{UI.fr.loading}</div>;
 
-  const needsSetup = members.length === 0;
+
+  /* en-tête de section repliable pour les réglages */
+  const Fold = ({ id, color, title, children }) => {
+    const open = openFold === id;
+    return (
+      <div>
+        <button onClick={() => setOpenFold(open ? null : id)}
+          className="flex w-full items-center gap-2 rounded-2xl px-3 py-3"
+          style={{ background: open ? color : C.blanc, color: open ? "#fff" : C.encre }}>
+          <span className="flex-1 text-start text-sm font-extrabold uppercase tracking-[0.1em]">{title}</span>
+          <span className="text-xs font-black">{open ? "▲" : "▼"}</span>
+        </button>
+        {open && <div className="mt-2">{children}</div>}
+      </div>
+    );
+  };
 
   const Titre = ({ children, color }) => (
     <p className="mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: color || C.encreDoux }}>
@@ -987,27 +1031,45 @@ function App() {
           </div>
         </header>
 
-        {needsSetup && !showAddMember ? (
+        {step === 0 ? (
           /* première ouverture : une invitation, pas un formulaire */
           <section className="mt-10 flex flex-col items-center text-center">
-            <div className="mb-5 flex gap-1">
+            <div className="mb-5 flex items-end gap-1">
               <Goutte color={C.turquoise} size={64} />
               <Goutte color={C.violet} size={52} />
               <Goutte color={C.orange} size={44} />
             </div>
             <h2 className="text-2xl font-black leading-tight" style={titre}>{t.welcomeTitle}</h2>
             <p className="mt-2 max-w-xs text-sm" style={{ color: C.encreDoux }}>{t.welcomeHint}</p>
-            <button onClick={() => setShowAddMember(true)}
+            <button onClick={() => setStep(1)}
               className="mt-7 w-full rounded-2xl py-4 text-base font-extrabold transition active:scale-[.98]"
               style={{ background: C.turquoise, color: "#fff" }}>
-              + {t.addFamily}
+              {t.begin}
             </button>
           </section>
-        ) : needsSetup ? (
-          <section className="mt-8">
-            <h2 className="text-xl font-black" style={titre}>{t.setupTitle}</h2>
+
+        ) : step === 1 ? (
+          /* étape 1 sur 2 : le foyer */
+          <section className="mt-6">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: C.turquoise }}>
+              {t.stepOf.replace("{n}", "1")}
+            </p>
+            <h2 className="mt-1 text-xl font-black" style={titre}>{t.setupTitle}</h2>
             <p className="mt-1 text-sm" style={{ color: C.encreDoux }}>{t.setupHint}</p>
-            <div className="mt-5 rounded-3xl p-4" style={{ background: C.blanc }}>
+
+            {members.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {members.map((p) => (
+                  <span key={p.id} className="flex items-center gap-2 rounded-full py-1.5 pe-3 ps-1.5"
+                    style={{ background: C.blanc }}>
+                    <Avatar a={p.avatar} size={26} />
+                    <span className="text-sm font-extrabold">{p.name}</span>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 rounded-3xl p-4" style={{ background: C.blanc }}>
               <AvatarPicker />
               <input value={draftName} onChange={(e) => setDraftName(e.target.value)} placeholder={t.name}
                 className="mt-3 w-full rounded-2xl px-4 py-3 outline-none" style={{ background: C.gris }} />
@@ -1020,13 +1082,85 @@ function App() {
                 ))}
               </div>
               <button onClick={addMember} className="mt-3 w-full rounded-2xl py-3 font-extrabold"
-                style={{ background: C.turquoise, color: "#fff" }}>{t.add}</button>
+                style={{ background: C.turquoise, color: "#fff" }}>+ {t.add}</button>
             </div>
+
+            <p className="mt-3 rounded-2xl px-4 py-3 text-[12px] font-bold leading-snug"
+              style={{ background: C.blanc, color: C.encreDoux }}>
+              💡 {t.laterMembers}
+            </p>
+
+            {members.length > 0 && (
+              <button onClick={() => setStep(2)}
+                className="mt-4 w-full rounded-2xl py-4 text-base font-extrabold"
+                style={{ background: C.violet, color: "#fff" }}>
+                {t.next} →
+              </button>
+            )}
           </section>
+
+        ) : step === 2 ? (
+          /* étape 2 sur 2 : les tâches */
+          <section className="mt-6">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: C.violet }}>
+              {t.stepOf.replace("{n}", "2")}
+            </p>
+            <h2 className="mt-1 text-xl font-black" style={titre}>{t.setupTasks}</h2>
+            <p className="mt-1 text-sm" style={{ color: C.encreDoux }}>{t.setupTasksHint}</p>
+
+            {/* mêmes étiquettes et même fiche que dans l'onglet Tâches */}
+            {tasks.length > 0 && (
+              <div className="mt-4 flex flex-col gap-2">
+                {tasks.map((task, i) => (
+                  <div key={task.id} className="flex flex-col gap-2">
+                    {rowEl(task, i, "edit")}
+                    {openTask === task.id && editorEl(task)}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button onClick={() => setAddMenu(true)}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-4"
+              style={{ background: C.blanc, border: `2.5px dashed ${C.violet}`, color: C.violet }}>
+              <span className="text-xl font-black">+</span>
+              <span className="text-sm font-extrabold">{t.addTask}</span>
+            </button>
+
+            <p className="mt-3 rounded-2xl px-4 py-3 text-[12px] font-bold leading-snug"
+              style={{ background: C.blanc, color: C.encreDoux }}>
+              💡 {t.laterTasks}
+            </p>
+
+            <button onClick={() => { setStep(3); setTab("home"); }}
+              className="mt-4 w-full rounded-2xl py-4 text-base font-extrabold"
+              style={{ background: C.turquoise, color: "#fff" }}>
+              {tasks.length > 0 ? t.finish : t.skip}
+            </button>
+          </section>
+
         ) : (
           <>
+            {/* un seul membre : on invite à compléter le foyer */}
+            {tab === "home" && members.length === 1 && (
+              <button onClick={() => { setTab("settings"); setOpenFold("people"); }}
+                className="mt-4 flex w-full items-center gap-3 rounded-2xl p-3 text-start"
+                style={{ background: C.blanc, border: `2px dashed ${C.turquoise}` }}>
+                <span className="flex h-9 w-9 items-center justify-center rounded-full text-lg font-black"
+                  style={{ background: C.turquoise, color: "#fff" }}>+</span>
+                <span className="flex-1 text-[13px] font-extrabold" style={{ color: C.encre }}>
+                  {t.addMore}
+                </span>
+              </button>
+            )}
+
             {(tab === "home" || (tab === "tasks" && taskView === "list")) && (
-              <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+              <div className="mt-4">
+                <p className="mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em]"
+                  style={{ color: C.encreDoux }}>
+                  {t.whoChecks}
+                </p>
+                <div className="flex gap-2 overflow-x-auto pb-1">
                 {members.map((p, i) => {
                   const on = p.id === active?.id;
                   return (
@@ -1038,6 +1172,7 @@ function App() {
                     </button>
                   );
                 })}
+                </div>
               </div>
             )}
 
@@ -1045,50 +1180,78 @@ function App() {
             {tab === "home" && (
               <>
                 <section className="mt-5">
-                  <Titre color={C.violet}>{t.scores}</Titre>
-                  <div className="flex flex-col gap-2">
-                    {members.map((p, i) => {
-                      const v = scores[p.id] || 0;
-                      const col = ACCENTS[i % 3];
-                      /* la barre vise la prochaine récompense validée par tous,
-                         plutôt que le score du meilleur : chacun court après un but */
-                      const goal = validRewards.filter((r) => r.cost > v).sort((a, b) => a.cost - b.cost)[0];
-                      const reachable = validRewards.filter((r) => r.cost <= v).sort((a, b) => b.cost - a.cost)[0];
-                      const max = goal ? goal.cost : Math.max(50, v);
-                      return (
-                        <div key={p.id} className="rounded-2xl p-3" style={{ background: C.blanc }}>
-                          <div className="flex items-center gap-2">
-                            <Avatar a={p.avatar} size={34} />
-                            <span className="flex-1 font-extrabold">{p.name}</span>
-                            <span className="rounded-full px-2.5 py-1 text-xs font-extrabold" style={{ background: col, color: "#fff" }}>
-                              {v} {t.points}
-                            </span>
+                  {/* seuls les points de la personne choisie s'affichent */}
+                  {active && (() => {
+                    const idx = members.findIndex((m) => m.id === active.id);
+                    const v = scores[active.id] || 0;
+                    const col = ACCENTS[(idx < 0 ? 0 : idx) % 3];
+                    const goal = validRewards.filter((r) => r.cost > v).sort((a, b) => a.cost - b.cost)[0];
+                    const reachable = validRewards.filter((r) => r.cost <= v).sort((a, b) => b.cost - a.cost)[0];
+                    const max = goal ? goal.cost : Math.max(50, v);
+                    return (
+                      <div className="rounded-3xl p-4" style={{ background: C.blanc }}>
+                        <div className="flex items-center gap-3">
+                          <Avatar a={active.avatar} size={46} />
+                          <div className="flex-1">
+                            <p className="text-lg font-black leading-tight" style={titre}>{active.name}</p>
+                            <p className="text-[11px] font-bold" style={{ color: C.encreDoux }}>{t.scores}</p>
                           </div>
-                          <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full" style={{ background: C.gris }}>
-                            <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, (v / max) * 100)}%`, background: col }} />
-                          </div>
-
-                          {reachable ? (
-                            <button onClick={() => claimReward(p, reachable)}
-                              className="mt-2 w-full rounded-xl py-2 text-xs font-extrabold transition active:scale-[.98]"
-                              style={{ background: col, color: "#fff" }}>
-                              🎁 {reachable.label} · {t.rwClaim}
-                            </button>
-                          ) : goal ? (
-                            <p className="mt-1.5 text-[11px] font-bold" style={{ color: C.encreDoux }}>
-                              {t.rwNext} : {goal.label} · {goal.cost - v} {t.points}
-                            </p>
-                          ) : null}
+                          <span className="rounded-full px-3.5 py-2 text-base font-black"
+                            style={{ background: col, color: "#fff" }}>
+                            {v}
+                          </span>
                         </div>
-                      );
-                    })}
-                  </div>
+
+                        <div className="mt-3 h-3 w-full overflow-hidden rounded-full" style={{ background: C.gris }}>
+                          <div className="h-full rounded-full transition-all"
+                            style={{ width: `${Math.min(100, (v / max) * 100)}%`, background: col }} />
+                        </div>
+
+                        {reachable ? (
+                          <button onClick={() => claimReward(active, reachable)}
+                            className="mt-3 w-full rounded-2xl py-2.5 text-sm font-extrabold transition active:scale-[.98]"
+                            style={{ background: col, color: "#fff" }}>
+                            🎁 {reachable.label} · {t.rwClaim}
+                          </button>
+                        ) : goal ? (
+                          <p className="mt-2 text-[12px] font-bold" style={{ color: C.encreDoux }}>
+                            {t.rwNext} : {goal.label} · {goal.cost - v} {t.points}
+                          </p>
+                        ) : null}
+                      </div>
+                    );
+                  })()}
                 </section>
 
                 <Section title={t.morning} color={C.turquoise} items={byMoment("morning")} mom="morning" />
                 <Section title={t.anyTime} color={C.encreDoux} items={byMoment("any")} off={1} mom="any" />
                 <Section title={t.evening} color={C.violet} items={byMoment("evening")} off={2} mom="evening" />
                 <Section title={t.weekTasks} color={C.orange} items={weekly} off={1} />
+
+                {/* rien de prévu : on renvoie vers la bibliothèque */}
+                {tasks.length === 0 && (
+                  <section className="mt-8 flex flex-col items-center text-center">
+                    <div className="mb-4 opacity-40"><Goutte color={C.encreDoux} size={56} /></div>
+                    <p className="text-sm font-bold" style={{ color: C.encreDoux }}>{t.noTasksYet}</p>
+                    <button onClick={() => { setTab("tasks"); setTaskView("list"); setLibOpen(true); }}
+                      className="mt-4 w-full rounded-2xl py-3.5 text-sm font-extrabold"
+                      style={{ background: C.turquoise, color: "#fff" }}>
+                      + {t.goAddTasks}
+                    </button>
+                  </section>
+                )}
+
+                {/* des tâches existent, mais aucune aujourd'hui */}
+                {tasks.length > 0 && todayTasks.length === 0 && weekly.length === 0 && (
+                  <section className="mt-8 flex flex-col items-center text-center">
+                    <p className="text-sm font-bold" style={{ color: C.encreDoux }}>{t.noDay}</p>
+                    <button onClick={() => { setTab("tasks"); setTaskView("week"); }}
+                      className="mt-3 w-full rounded-2xl py-3 text-sm font-extrabold"
+                      style={{ background: C.violet, color: "#fff" }}>
+                      {t.plan}
+                    </button>
+                  </section>
+                )}
 
                 {todayTasks.length > 0 && todayTasks.every(isDone) && (
                   <div className="mt-5 rounded-3xl p-5 text-center" style={{ background: C.turquoise, color: "#fff" }}>
@@ -1230,8 +1393,46 @@ function App() {
             {/* ===== RÉGLAGES ===== */}
             {tab === "settings" && (
               <section className="mt-5 flex flex-col gap-6">
-                <div>
-                  <Titre color={C.turquoise}>{t.people}</Titre>
+                {/* vue d'ensemble : la seule page où l'on compare le foyer */}
+                {members.length > 0 && (
+                  <Fold id="overview" color={C.violet} title={t.overview}>
+                    <div className="flex flex-col gap-2">
+                      {[...members]
+                        .sort((a, b) => (scores[b.id] || 0) - (scores[a.id] || 0))
+                        .map((p) => {
+                          const idx = members.findIndex((m) => m.id === p.id);
+                          const col = ACCENTS[idx % 3];
+                          const v = scores[p.id] || 0;
+                          const max = Math.max(50, ...members.map((x) => scores[x.id] || 0));
+                          const doneN = weekLog.filter((e) => e.memberId === p.id && e.taskId !== "__reward__").length;
+                          return (
+                            <div key={p.id} className="rounded-2xl p-3" style={{ background: C.blanc }}>
+                              <div className="flex items-center gap-2">
+                                <Avatar a={p.avatar} size={34} />
+                                <div className="flex-1">
+                                  <span className="block font-extrabold leading-tight">{p.name}</span>
+                                  <span className="text-[11px] font-bold" style={{ color: C.encreDoux }}>
+                                    {doneN} {t.tasksDone}
+                                  </span>
+                                </div>
+                                <span className="rounded-full px-2.5 py-1 text-xs font-extrabold"
+                                  style={{ background: col, color: "#fff" }}>
+                                  {v} {t.points}
+                                </span>
+                              </div>
+                              <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full" style={{ background: C.gris }}>
+                                <div className="h-full rounded-full transition-all"
+                                  style={{ width: `${Math.min(100, (v / max) * 100)}%`, background: col }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                    <p className="mt-2 text-[11px]" style={{ color: C.encreDoux }}>{t.overviewHint}</p>
+                  </Fold>
+                )}
+
+                <Fold id="people" color={C.turquoise} title={t.people}>
                   <div className="flex flex-col gap-2">
                     {members.map((p, i) => (
                       <div key={p.id} className="flex items-center gap-3 rounded-2xl p-2.5" style={{ background: C.blanc }}>
@@ -1260,12 +1461,11 @@ function App() {
                     <button onClick={addMember} className="mt-2 w-full rounded-2xl py-2.5 font-extrabold"
                       style={{ background: C.turquoise, color: "#fff" }}>{t.add}</button>
                   </div>
-                </div>
+                </Fold>
 
                 {/* les récompenses se décident à plusieurs :
                    tant que tout le monde n'a pas validé, elle reste en attente */}
-                <div>
-                  <Titre color={C.orange}>{t.rewards}</Titre>
+                <Fold id="rewards" color={C.orange} title={t.rewards}>
                   <p className="mb-2 text-[11px]" style={{ color: C.encreDoux }}>{t.rwHint}</p>
 
                   {rewards.length === 0 ? (
@@ -1341,10 +1541,9 @@ function App() {
                       {t.newReward}
                     </button>
                   </div>
-                </div>
+                </Fold>
 
-                <div>
-                  <Titre color={C.violet}>{t.history}</Titre>
+                <Fold id="history" color={C.violet} title={t.history}>
                   {weekLog.length === 0 ? (
                     <p className="text-sm" style={{ color: C.encreDoux }}>{t.nothing}</p>
                   ) : (
@@ -1368,7 +1567,7 @@ function App() {
                       })}
                     </div>
                   )}
-                </div>
+                </Fold>
 
                 <button onClick={() => setLog((l) => l.filter((e) => e.ts < ws))}
                   className="rounded-2xl py-3 text-sm font-extrabold" style={{ background: C.orange, color: "#fff" }}>
@@ -1554,7 +1753,7 @@ function App() {
           style={{ background: C.orange, color: "#fff" }}>{err}</div>
       )}
 
-      {!needsSetup && (
+      {step >= 3 && (
         <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-md justify-around px-3 pb-4 pt-2"
           style={{ background: `linear-gradient(to top, ${C.gris} 76%, transparent)` }}>
           {[
