@@ -122,6 +122,12 @@ const UI = {
     points: "pts", history: "Historique", nothing: "Rien cette semaine.",
     photo: "Photo", drops: "Gouttes", figures: "Figurines", avatar: "Avatar",
     assign: "Pour qui ?", forHouse: "Pour la maison", forAll: "Pour tous",
+    orPick: "Ou choisir une ou plusieurs personnes",
+    inUse: "Tâche active", paused: "Tâche en pause",
+    pauseHint: "En pause, elle reste dans la liste mais n'apparaît plus au quotidien.",
+    prevWeek: "Semaine précédente", nextWeek: "Semaine suivante", thisWeekBtn: "Cette semaine",
+    reallyDone: "Ce qui a été fait", nothingDone: "Rien de coché ce jour-là.", dayTotal: "Total du jour",
+    planned: "Prévu ce jour-là",
     everyone: "Tous", edit: "Modifier", image: "Dessin de la tâche", close: "Fermer", done: "fait",
   },
   en: {
@@ -167,6 +173,12 @@ const UI = {
     points: "pts", history: "History", nothing: "Nothing this week.",
     photo: "Photo", drops: "Drops", figures: "Figures", avatar: "Avatar",
     assign: "For whom?", forHouse: "For the house", forAll: "For everyone",
+    orPick: "Or pick one or more people",
+    inUse: "Active task", paused: "Paused task",
+    pauseHint: "Paused, it stays in the list but no longer shows up day to day.",
+    prevWeek: "Previous week", nextWeek: "Next week", thisWeekBtn: "This week",
+    reallyDone: "What was done", nothingDone: "Nothing logged that day.", dayTotal: "Day total",
+    planned: "Planned that day",
     everyone: "All", edit: "Edit", image: "Task drawing", close: "Close", done: "done",
   },
   he: {
@@ -212,6 +224,12 @@ const UI = {
     points: "נק'", history: "היסטוריה", nothing: "אין כלום השבוע.",
     photo: "תמונה", drops: "טיפות", figures: "דמויות", avatar: "אווטאר",
     assign: "בשביל מי?", forHouse: "לבית", forAll: "לכולם",
+    orPick: "או לבחור אדם אחד או יותר",
+    inUse: "משימה פעילה", paused: "משימה מושהית",
+    pauseHint: "בהשהיה היא נשארת ברשימה אך לא מופיעה ביומיום.",
+    prevWeek: "שבוע קודם", nextWeek: "שבוע הבא", thisWeekBtn: "השבוע",
+    reallyDone: "מה שבוצע", nothingDone: "לא סומן כלום ביום זה.", dayTotal: "סה״כ ליום",
+    planned: "מתוכנן ליום זה",
     everyone: "הכול", edit: "עריכה", image: "איור המשימה", close: "סגירה", done: "בוצע",
   },
 };
@@ -533,23 +551,35 @@ function App() {
   const momentsOf = (task) => (task.moments && task.moments.length ? task.moments : ["any"]);
   const hit = (e, task, mom) => e.taskId === task.id && (!mom || (e.moment || "any") === mom);
   const doneBy = (task, mid, mom) => scopeLog(task).some((e) => hit(e, task, mom) && e.memberId === mid);
+  /* assign vaut "house" (une fois suffit pour le foyer), "all" (chacun
+     la fait), ou une liste d'identifiants : chaque personne désignée
+     doit la faire de son côté */
   const assignOf = (task) => task.assign || "house";
-  const isDone = (task, mom) =>
-    assignOf(task) === "all"
-      ? (active ? doneBy(task, active.id, mom) : false)
-      : scopeLog(task).some((e) => hit(e, task, mom));
-  const doneCount = (task, mom) => members.filter((m) => doneBy(task, m.id, mom)).length;
-  /* une tâche est visible pour la personne active si elle est commune
-     au foyer, imposée à tous, ou attribuée à cette personne */
-  const visibleFor = (task, mid) => {
+  const assignedIds = (task) => {
     const a = assignOf(task);
-    return a === "house" || a === "all" || a === mid;
+    if (a === "all") return members.map((m) => m.id);
+    if (Array.isArray(a)) return a;
+    if (typeof a === "string" && a !== "house") return [a];   // ancien format
+    return null;                                             // pour la maison
+  };
+  const isDone = (task, mom) => {
+    const ids = assignedIds(task);
+    if (!ids) return scopeLog(task).some((e) => hit(e, task, mom));
+    return active && ids.includes(active.id) ? doneBy(task, active.id, mom) : false;
+  };
+  const doneCount = (task, mom) => (assignedIds(task) || []).filter((id) => doneBy(task, id, mom)).length;
+  const assignTotal = (task) => (assignedIds(task) || []).length;
+  const visibleFor = (task, mid) => {
+    const ids = assignedIds(task);
+    return !ids || ids.includes(mid);
   };
   const assignLabel = (task) => {
     const a = assignOf(task);
     if (a === "house") return t.forHouse;
     if (a === "all") return t.forAll;
-    return members.find((m) => m.id === a)?.name || t.forHouse;
+    const ids = assignedIds(task) || [];
+    const noms = ids.map((id) => members.find((m) => m.id === id)?.name).filter(Boolean);
+    return noms.length ? noms.join(" · ") : t.forHouse;
   };
 
   /* une récompense n'existe que si tout le foyer l'a validée */
@@ -565,16 +595,42 @@ function App() {
     setTimeout(() => setBurst(null), 1300);
   }
 
+  const [weekOff, setWeekOff] = useState(0);
+  const dateOf = (off, d) => {
+    const x = new Date(weekStart());
+    x.setDate(x.getDate() + off * 7 + d);
+    return x;
+  };
+  const dayNum = (off, d) => dateOf(off, d).getDate();
+  const weekRange = (off) => {
+    const a = dateOf(off, 0), b = dateOf(off, 6);
+    const f = (x) => `${x.getDate()}/${x.getMonth() + 1}`;
+    return `${f(a)} – ${f(b)}`;
+  };
+
+  /* ce qui a vraiment été fait un jour donné, d'après l'historique */
+  const dayBounds = (off, d) => {
+    const a = dateOf(off, d); a.setHours(0, 0, 0, 0);
+    return [a.getTime(), a.getTime() + 86400000];
+  };
+  const doneOn = (off, d) => {
+    const [a, b] = dayBounds(off, d);
+    return log.filter((e) => e.ts >= a && e.ts < b && e.taskId !== "__reward__"
+      && (planWho === "all" || e.memberId === planWho));
+  };
+  const isPast = (off, d) => dayBounds(off, d)[0] <= Date.now();
+
   const today = todayIdx();
-  const forDay = (d) => tasks.filter((k) => k.freq === "daily" || (k.freq === "days" && (k.days || []).includes(d)));
+  const isOn = (k) => k.off !== true;
+  const forDay = (d) => tasks.filter((k) => isOn(k) && (k.freq === "daily" || (k.freq === "days" && (k.days || []).includes(d))));
   const todayTasks = forDay(today).filter((k) => visibleFor(k, active?.id));
   const byMoment = (m) => todayTasks.filter((k) => momentsOf(k).includes(m));
-  const weekly = tasks.filter((k) => k.freq === "weekly" && visibleFor(k, active?.id));
+  const weekly = tasks.filter((k) => isOn(k) && k.freq === "weekly" && visibleFor(k, active?.id));
 
   /* planning : vue de tout le foyer, ou d'une personne */
   const planFilter = (task) => (planWho === "all" ? true : visibleFor(task, planWho));
   const planFor = (d) => forDay(d).filter(planFilter);
-  const planWeekly = () => tasks.filter((k) => k.freq === "weekly" && planFilter(k));
+  const planWeekly = () => tasks.filter((k) => isOn(k) && k.freq === "weekly" && planFilter(k));
   /* une tâche peut porter des médias perso ; le premier sert de vignette */
   const mediaOf = (task) => (task.media || []).map((id) => media[id]).filter(Boolean);
   const src = (task) => {
@@ -770,7 +826,8 @@ function App() {
           }}
           className="flex items-center gap-3 rounded-2xl p-2"
           style={{
-            background: C.blanc,
+            background: task.off ? C.gris : C.blanc,
+            opacity: task.off ? 0.72 : 1,
             transform: `translateX(${rtl ? -dx : dx}px)`,
             transition: swipe && swipe.id === task.id ? "none" : "transform 200ms ease-out",
             boxShadow: armed ? `0 0 0 2px ${C.orange}` : "none",
@@ -793,12 +850,15 @@ function App() {
         ) : (
           <div className="flex-1">
             <span className="block text-[15px] font-bold leading-tight"
-              style={{ color: done && mode === "log" ? C.encreDoux : C.encre }}>
+              style={{
+                color: done && mode === "log" ? C.encreDoux : C.encre,
+                textDecoration: task.off ? "line-through" : "none",
+              }}>
               {label(task)}
             </span>
             <span className="text-[11px] font-bold" style={{ color: C.encreDoux }}>
-              {assignLabel(task)}
-              {assignOf(task) === "all" && members.length > 0 && ` · ${doneCount(task, mom)}/${members.length}`}
+              {task.off ? t.paused : assignLabel(task)}
+              {!task.off && assignTotal(task) > 1 && ` · ${doneCount(task, mom)}/${assignTotal(task)}`}
             </span>
           </div>
         )}
@@ -856,9 +916,9 @@ function App() {
           style={{ color: done ? C.encreDoux : C.encre }}>
           {label(task)}
         </p>
-        {assignOf(task) === "all" && members.length > 0 && (
+        {assignTotal(task) > 1 && (
           <p className="text-center text-[10px] font-bold" style={{ color: C.encreDoux }}>
-            {doneCount(task, mom)}/{members.length}
+            {doneCount(task, mom)}/{assignTotal(task)}
           </p>
         )}
       </div>
@@ -953,11 +1013,25 @@ function App() {
         <div className="flex flex-wrap gap-1.5">
           <Chip flex={false} on={assignOf(task) === "house"} color={C.turquoise} onClick={() => up({ assign: "house" })}>{t.forHouse}</Chip>
           <Chip flex={false} on={assignOf(task) === "all"} color={C.violet} onClick={() => up({ assign: "all" })}>{t.forAll}</Chip>
-          {members.map((m, i) => (
-            <Chip key={m.id} flex={false} on={assignOf(task) === m.id} color={ACCENTS[i % 3]} onClick={() => up({ assign: m.id })}>
-              {m.name}
-            </Chip>
-          ))}
+        </div>
+        <p className="mt-2 mb-1.5 text-[10px] font-extrabold uppercase tracking-widest" style={{ color: C.encreDoux }}>
+          {t.orPick}
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          {members.map((m, i) => {
+            const a = assignOf(task);
+            const cur = Array.isArray(a) ? a : (typeof a === "string" && a !== "house" && a !== "all" ? [a] : []);
+            const on = cur.includes(m.id);
+            return (
+              <Chip key={m.id} flex={false} on={on} color={ACCENTS[i % 3]}
+                onClick={() => {
+                  const next = on ? cur.filter((x) => x !== m.id) : [...cur, m.id];
+                  up({ assign: next.length ? next : "house" });
+                }}>
+                {m.name}
+              </Chip>
+            );
+          })}
         </div>
 
         <p className="mb-1.5 mt-3 text-[10px] font-extrabold uppercase tracking-widest" style={{ color: C.encreDoux }}>{t.recurrence}</p>
@@ -1002,6 +1076,21 @@ function App() {
             <p className="mt-1 text-[10px]" style={{ color: C.encreDoux }}>{t.momentHint}</p>
           </>
         )}
+
+        <button onClick={() => up({ off: !task.off })}
+          className="mt-3 flex w-full items-center gap-3 rounded-2xl px-3 py-2.5"
+          style={{ background: task.off ? C.gris : C.blanc, boxShadow: `inset 0 0 0 2px ${C.grisF}` }}>
+          <span className="flex-1 text-start text-[12px] font-extrabold"
+            style={{ color: task.off ? C.encreDoux : C.encre }}>
+            {task.off ? t.paused : t.inUse}
+          </span>
+          <span className="flex h-6 w-11 items-center rounded-full px-0.5 transition"
+            style={{ background: task.off ? C.grisF : C.turquoise }}>
+            <span className="h-5 w-5 rounded-full bg-white transition"
+              style={{ marginInlineStart: task.off ? 0 : "22px" }} />
+          </span>
+        </button>
+        <p className="mt-1 text-[10px]" style={{ color: C.encreDoux }}>{t.pauseHint}</p>
 
         <div className="mt-3 flex items-center gap-2">
           <span className="text-[10px] font-extrabold uppercase tracking-widest" style={{ color: C.encreDoux }}>{t.points}</span>
@@ -1345,28 +1434,57 @@ function App() {
                   })}
                 </div>
 
-                <Titre color={C.violet}>{t.week}</Titre>
+                {/* on peut remonter ou avancer de semaine en semaine */}
+                <div className="mb-2 flex items-center gap-2">
+                  <button onClick={() => setWeekOff((w) => w - 1)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-base font-black"
+                    style={{ background: C.blanc, color: C.violet }}>‹</button>
+                  <div className="flex-1 text-center">
+                    <p className="text-sm font-black" style={titre}>{weekRange(weekOff)}</p>
+                    {weekOff !== 0 && (
+                      <button onClick={() => setWeekOff(0)}
+                        className="mt-0.5 text-[11px] font-extrabold underline" style={{ color: C.violet }}>
+                        {t.thisWeekBtn}
+                      </button>
+                    )}
+                  </div>
+                  <button onClick={() => setWeekOff((w) => w + 1)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-base font-black"
+                    style={{ background: C.blanc, color: C.violet }}>›</button>
+                </div>
+
                 <div className="flex gap-1.5">
                   {t.days.map((d, i) => {
                     const on = planDay === i;
+                    const isToday = weekOff === 0 && i === today;
                     return (
                       <button key={i} onClick={() => setPlanDay(i)}
-                        className="flex flex-1 flex-col items-center gap-1 rounded-2xl py-2"
+                        className="flex flex-1 flex-col items-center gap-0.5 rounded-2xl py-2"
                         style={{
                           background: on ? C.violet : C.blanc, color: on ? "#fff" : C.encre,
-                          outline: i === today && !on ? `2px solid ${C.turquoise}` : "none",
+                          outline: isToday && !on ? `2px solid ${C.turquoise}` : "none",
                         }}>
                         <span className="text-xs font-black">{d}</span>
+                        <span className="text-[10px] font-bold"
+                          style={{ color: on ? "rgba(255,255,255,.8)" : C.encreDoux }}>
+                          {dayNum(weekOff, i)}
+                        </span>
                         <span className="rounded-full px-1.5 text-[10px] font-extrabold"
                           style={{ background: on ? "rgba(255,255,255,.25)" : C.gris, color: on ? "#fff" : C.encreDoux }}>
-                          {planFor(i).length}
+                          {isPast(weekOff, i) ? `${doneOn(weekOff, i).length}/${planFor(i).length}` : planFor(i).length}
                         </span>
                       </button>
                     );
                   })}
                 </div>
 
-                <p className="mt-4 text-base font-black" style={titre}>{t.dayFull[planDay]}</p>
+                <p className="mt-4 text-base font-black" style={titre}>
+                  {t.dayFull[planDay]} {dayNum(weekOff, planDay)}
+                </p>
+                <p className="mb-1 mt-2 text-[11px] font-extrabold uppercase tracking-[0.14em]"
+                  style={{ color: C.encreDoux }}>
+                  {t.planned}
+                </p>
                 <div className="mt-2 flex flex-col gap-2">
                   {planFor(planDay).length === 0 && <p className="text-sm" style={{ color: C.encreDoux }}>{t.noDay}</p>}
                   {planFor(planDay).map((task) => (
@@ -1385,6 +1503,46 @@ function App() {
                     </div>
                   ))}
                 </div>
+
+                {/* ce qui a réellement été coché ce jour-là */}
+                {isPast(weekOff, planDay) && (
+                  <div className="mt-6">
+                    <Titre color={C.turquoise}>{t.reallyDone}</Titre>
+                    {doneOn(weekOff, planDay).length === 0 ? (
+                      <p className="text-sm" style={{ color: C.encreDoux }}>{t.nothingDone}</p>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        {doneOn(weekOff, planDay).map((e) => {
+                          const p = members.find((x) => x.id === e.memberId);
+                          const task = tasks.find((x) => x.id === e.taskId);
+                          const heure = new Date(e.ts).toLocaleTimeString(
+                            lang === "he" ? "he-IL" : lang === "en" ? "en-GB" : "fr-FR",
+                            { hour: "2-digit", minute: "2-digit" });
+                          return (
+                            <div key={e.id} className="flex items-center gap-3 rounded-2xl p-2" style={{ background: C.blanc }}>
+                              {p && <Avatar a={p.avatar} size={32} />}
+                              <div className="flex-1">
+                                <span className="block text-sm font-bold leading-tight">
+                                  {task ? label(task) : "—"}
+                                </span>
+                                <span className="text-[11px] font-bold" style={{ color: C.encreDoux }}>
+                                  {p ? p.name : "—"} · {heure}
+                                </span>
+                              </div>
+                              <span className="rounded-full px-2.5 py-1 text-[11px] font-extrabold"
+                                style={{ background: C.turquoise, color: "#fff" }}>
+                                +{e.points}
+                              </span>
+                            </div>
+                          );
+                        })}
+                        <p className="mt-1 text-end text-xs font-extrabold" style={{ color: C.encreDoux }}>
+                          {t.dayTotal} : {doneOn(weekOff, planDay).reduce((n, e) => n + e.points, 0)} {t.points}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {planWeekly().length > 0 && (
                   <div className="mt-6">
