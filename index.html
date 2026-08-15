@@ -123,6 +123,8 @@ const UI = {
     photo: "Photo", drops: "Gouttes", figures: "Figurines", avatar: "Avatar",
     assign: "Pour qui ?", forHouse: "Pour la maison", forAll: "Pour tous",
     orPick: "Ou choisir une ou plusieurs personnes",
+    houseTasks: "Maison — aujourd'hui", houseWeek: "Maison — cette semaine", whoDidIt: "Qui l'a faite ?",
+    kidHint: "« Pour la maison » : la tâche apparaît dans la section Maison, et on choisit qui l'a faite au moment de la cocher.",
     inUse: "Tâche active", paused: "Tâche en pause",
     pauseHint: "En pause, elle reste dans la liste mais n'apparaît plus au quotidien.",
     prevWeek: "Semaine précédente", nextWeek: "Semaine suivante", thisWeekBtn: "Cette semaine",
@@ -174,6 +176,8 @@ const UI = {
     photo: "Photo", drops: "Drops", figures: "Figures", avatar: "Avatar",
     assign: "For whom?", forHouse: "For the house", forAll: "For everyone",
     orPick: "Or pick one or more people",
+    houseTasks: "Home — today", houseWeek: "Home — this week", whoDidIt: "Who did it?",
+    kidHint: "\"For the house\": the task appears in the Home section, and you pick who did it when checking it off.",
     inUse: "Active task", paused: "Paused task",
     pauseHint: "Paused, it stays in the list but no longer shows up day to day.",
     prevWeek: "Previous week", nextWeek: "Next week", thisWeekBtn: "This week",
@@ -225,6 +229,8 @@ const UI = {
     photo: "תמונה", drops: "טיפות", figures: "דמויות", avatar: "אווטאר",
     assign: "בשביל מי?", forHouse: "לבית", forAll: "לכולם",
     orPick: "או לבחור אדם אחד או יותר",
+    houseTasks: "הבית — היום", houseWeek: "הבית — השבוע", whoDidIt: "מי עשה את זה?",
+    kidHint: "\"לבית\": המשימה מופיעה בקטע הבית, ובוחרים מי ביצע אותה בעת הסימון.",
     inUse: "משימה פעילה", paused: "משימה מושהית",
     pauseHint: "בהשהיה היא נשארת ברשימה אך לא מופיעה ביומיום.",
     prevWeek: "שבוע קודם", nextWeek: "שבוע הבא", thisWeekBtn: "השבוע",
@@ -458,6 +464,7 @@ function App() {
   const [burst, setBurst] = useState(null);
   const [zoom, setZoom] = useState(null);
   const [zoomIdx, setZoomIdx] = useState(0);
+  const [askWho, setAskWho] = useState(null);
   const [media, setMedia] = useState({});
   const mediaRef = useRef(null);
   const [mediaFor, setMediaFor] = useState(null);
@@ -564,15 +571,18 @@ function App() {
   };
   const isDone = (task, mom) => {
     const ids = assignedIds(task);
-    if (!ids) return scopeLog(task).some((e) => hit(e, task, mom));
+    if (!ids) return scopeLog(task).some((e) => hit(e, task, mom));   // maison
     return active && ids.includes(active.id) ? doneBy(task, active.id, mom) : false;
   };
   const doneCount = (task, mom) => (assignedIds(task) || []).filter((id) => doneBy(task, id, mom)).length;
   const assignTotal = (task) => (assignedIds(task) || []).length;
+  /* une tâche « pour la maison » n'est proposée qu'aux adultes :
+     un tout-petit ne doit voir que ce qui lui est attribué */
   const visibleFor = (task, mid) => {
     const ids = assignedIds(task);
     return !ids || ids.includes(mid);
   };
+  const isHouse = (task) => assignedIds(task) === null;
   const assignLabel = (task) => {
     const a = assignOf(task);
     if (a === "house") return t.forHouse;
@@ -624,8 +634,13 @@ function App() {
   const isOn = (k) => k.off !== true;
   const forDay = (d) => tasks.filter((k) => isOn(k) && (k.freq === "daily" || (k.freq === "days" && (k.days || []).includes(d))));
   const todayTasks = forDay(today).filter((k) => visibleFor(k, active?.id));
-  const byMoment = (m) => todayTasks.filter((k) => momentsOf(k).includes(m));
-  const weekly = tasks.filter((k) => isOn(k) && k.freq === "weekly" && visibleFor(k, active?.id));
+  const mineToday = todayTasks.filter((k) => !isHouse(k));
+  /* la maison est commune : elle ne dépend pas de la personne choisie */
+  const houseToday = forDay(today).filter(isHouse);
+  const byMoment = (m) => mineToday.filter((k) => momentsOf(k).includes(m));
+  const weeklyAll = tasks.filter((k) => isOn(k) && k.freq === "weekly" && visibleFor(k, active?.id));
+  const weekly = weeklyAll.filter((k) => !isHouse(k));
+  const houseWeekly = tasks.filter((k) => isOn(k) && k.freq === "weekly" && isHouse(k));
 
   /* planning : vue de tout le foyer, ou d'une personne */
   const planFilter = (task) => (planWho === "all" ? true : visibleFor(task, planWho));
@@ -741,9 +756,21 @@ function App() {
     setDraftAvatar({ type: "drop", value: DROPS[(members.length + 1) % DROPS.length] });
   }
 
-  function logTask(task, mom = null) {
-    if (!active) return;
-    const entry = { id: uid(), taskId: task.id, memberId: active.id, points: task.points, ts: Date.now(), moment: mom || "any" };
+  /* décocher : on retire la dernière entrée correspondante */
+  function unlogTask(task, mom = null) {
+    if (!active && members.length === 0) return;
+    const ids = assignedIds(task);
+    const cands = scopeLog(task).filter((e) => hit(e, task, mom)
+      && (!ids || e.memberId === active.id));   // maison : n'importe qui
+    if (!cands.length) return;
+    const last = cands.reduce((a, b) => (b.ts > a.ts ? b : a));
+    setLog((l) => l.filter((e) => e.id !== last.id));
+  }
+
+  function logTask(task, mom = null, who = null) {
+    const mid = who || active?.id;
+    if (!mid) return;
+    const entry = { id: uid(), taskId: task.id, memberId: mid, points: task.points, ts: Date.now(), moment: mom || "any" };
     setLog((l) => [...l, entry]);
     const variants = ["spin", "dance", "shine"];
     setBurst({
@@ -865,7 +892,9 @@ function App() {
 
         {mode === "log" ? (
           done ? (
-            <span className="rounded-full px-3 py-1.5 text-xs font-extrabold" style={{ background: C.gris, color: C.encreDoux }}>✓</span>
+            <button onClick={() => unlogTask(task, mom)}
+              className="rounded-full px-3 py-1.5 text-xs font-extrabold"
+              style={{ background: C.gris, color: C.encreDoux }}>✓</button>
           ) : (
             <button onClick={() => logTask(task, mom)}
               className="rounded-full px-3.5 py-1.5 text-xs font-extrabold transition active:scale-95"
@@ -890,9 +919,19 @@ function App() {
   const cardEl = (task, i, mom) => {
     const done = isDone(task, mom);
     const col = ACCENTS[i % 3];
+    const maison = isHouse(task);
+    /* qui a fait une tâche de la maison ? on le lit dans l'historique */
+    const par = maison && done
+      ? members.find((m) => m.id === scopeLog(task).filter((e) => hit(e, task, mom))
+          .reduce((a, b) => (b.ts > a.ts ? b : a)).memberId)
+      : null;
     return (
       <div key={task.id} className="w-[46%] shrink-0 snap-start pt-1">
-        <button onClick={() => (done ? setZoom(task) : logTask(task, mom))}
+        <button onClick={() => {
+          if (done) { unlogTask(task, mom); return; }
+          if (maison && members.length > 1) { setAskWho({ task, mom }); return; }
+          logTask(task, mom, maison ? (members[0]?.id) : null);
+        }}
           className="relative block w-full overflow-hidden rounded-3xl transition active:scale-95"
           style={{ background: C.blanc, border: `3px solid ${done ? C.encreDoux : col}` }}>
           <img src={src(task)} alt="" className="block aspect-square w-full object-cover"
@@ -916,6 +955,12 @@ function App() {
           style={{ color: done ? C.encreDoux : C.encre }}>
           {label(task)}
         </p>
+        {par && (
+          <div className="mt-1 flex items-center justify-center gap-1.5">
+            <Avatar a={par.avatar} size={20} />
+            <span className="text-[11px] font-bold" style={{ color: C.encreDoux }}>{par.name}</span>
+          </div>
+        )}
         {assignTotal(task) > 1 && (
           <p className="text-center text-[10px] font-bold" style={{ color: C.encreDoux }}>
             {doneCount(task, mom)}/{assignTotal(task)}
@@ -1014,6 +1059,7 @@ function App() {
           <Chip flex={false} on={assignOf(task) === "house"} color={C.turquoise} onClick={() => up({ assign: "house" })}>{t.forHouse}</Chip>
           <Chip flex={false} on={assignOf(task) === "all"} color={C.violet} onClick={() => up({ assign: "all" })}>{t.forAll}</Chip>
         </div>
+        <p className="mt-1.5 text-[10px] leading-snug" style={{ color: C.encreDoux }}>{t.kidHint}</p>
         <p className="mt-2 mb-1.5 text-[10px] font-extrabold uppercase tracking-widest" style={{ color: C.encreDoux }}>
           {t.orPick}
         </p>
@@ -1335,6 +1381,8 @@ function App() {
                 <Section title={t.anyTime} color={C.encreDoux} items={byMoment("any")} off={1} mom="any" />
                 <Section title={t.evening} color={C.violet} items={byMoment("evening")} off={2} mom="evening" />
                 <Section title={t.weekTasks} color={C.orange} items={weekly} off={1} />
+                <Section title={t.houseTasks} color={C.turquoise} items={houseToday} off={2} mom="any" />
+                <Section title={t.houseWeek} color={C.orange} items={houseWeekly} off={1} />
 
                 {/* rien de prévu : on renvoie vers la bibliothèque */}
                 {tasks.length === 0 && (
@@ -1918,6 +1966,40 @@ function App() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* tâche de la maison : qui l'a faite ? */}
+      {askWho && (
+        <div className="fade-in fixed inset-0 z-40 flex items-end justify-center p-4"
+          style={{ background: "rgba(16,27,45,.62)" }} onClick={() => setAskWho(null)}>
+          <div className="zoom-in w-full max-w-md rounded-3xl p-4" style={{ background: C.blanc }}
+            onClick={(e) => e.stopPropagation()}>
+            <p className="mb-1 text-center text-base font-black" style={{ fontFamily: "Nunito, Assistant, sans-serif" }}>
+              {label(askWho.task)}
+            </p>
+            <p className="mb-3 text-center text-sm font-bold" style={{ color: C.encreDoux }}>{t.whoDidIt}</p>
+            <div className="flex flex-col gap-2">
+              {members.map((p, i) => (
+                <button key={p.id}
+                  onClick={() => { logTask(askWho.task, askWho.mom, p.id); setAskWho(null); }}
+                  className="flex items-center gap-3 rounded-2xl p-2.5 text-start transition active:scale-[.98]"
+                  style={{ background: C.gris }}>
+                  <Avatar a={p.avatar} size={38} />
+                  <span className="flex-1 text-base font-extrabold">{p.name}</span>
+                  <span className="rounded-full px-3 py-1.5 text-xs font-extrabold"
+                    style={{ background: ACCENTS[i % 3], color: "#fff" }}>
+                    +{askWho.task.points}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <button onClick={() => setAskWho(null)}
+              className="mt-3 w-full rounded-2xl py-3 text-sm font-extrabold"
+              style={{ background: C.gris, color: C.encreDoux }}>
+              {t.cancel}
+            </button>
           </div>
         </div>
       )}
