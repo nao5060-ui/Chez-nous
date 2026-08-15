@@ -244,12 +244,16 @@ const CATALOG = [
     fr: "Préparer le repas", en: "Cook the meal", he: "להכין ארוחה" },
   { id: "dish", img: "dish", cat: "kitchen", points: 10, freq: "daily", moments: ["evening"], assign: "house",
     fr: "Remplir le lave-vaisselle", en: "Load the dishwasher", he: "למלא מדיח" },
+  { id: "emptydish", img: "emptydish", cat: "kitchen", points: 10, freq: "daily", moments: ["morning"], assign: "house",
+    fr: "Vider le lave-vaisselle", en: "Empty the dishwasher", he: "לרוקן את המדיח" },
 
   // --- ménage ---
   { id: "vacuum", img: "vacuum", cat: "clean", points: 15, freq: "days", days: [5], moments: ["any"], assign: "house",
     fr: "Passer l'aspirateur", en: "Vacuum", he: "לשאוב אבק" },
   { id: "mop", img: "mop", cat: "clean", points: 15, freq: "weekly", moments: ["any"], assign: "house",
     fr: "Passer la serpillière", en: "Mop the floor", he: "לשטוף רצפה" },
+  { id: "floorbot", img: "floorbot", cat: "clean", points: 15, freq: "days", days: [1, 4], moments: ["any"], assign: "house",
+    fr: "Passer le robot laveur", en: "Run the floor washer", he: "להפעיל שוטף הרצפות" },
   { id: "window", img: "window", cat: "clean", points: 15, freq: "weekly", moments: ["any"], assign: "house",
     fr: "Nettoyer les vitres", en: "Clean the windows", he: "לנקות חלונות" },
   { id: "trash", img: "trash", cat: "clean", points: 10, freq: "days", days: [1, 4], moments: ["evening"], assign: "house",
@@ -269,9 +273,23 @@ const CATALOG = [
   { id: "clothesline", img: "clothesline", cat: "laundry", points: 10, freq: "days", days: [1, 4], moments: ["any"], assign: "house",
     fr: "Étendre le linge", en: "Hang the laundry", he: "לתלות כביסה" },
 
+  // --- rituels du matin ---
+  { id: "modeani", img: "modeani", cat: "ritual", points: 5, freq: "daily", moments: ["morning"], assign: "all",
+    fr: "Modé Ani", en: "Modeh Ani", he: "מודה אני" },
+  { id: "netilat", img: "netilat", cat: "ritual", points: 5, freq: "daily", moments: ["morning"], assign: "all",
+    fr: "Netilat Yadayim", en: "Netilat Yadayim", he: "נטילת ידיים" },
+  { id: "brachot", img: "brachot", cat: "ritual", points: 5, freq: "daily", moments: ["morning"], assign: "all",
+    fr: "Birkot Hashahar", en: "Birkot Hashachar", he: "ברכות השחר" },
+  { id: "tfila", img: "tfila", cat: "ritual", points: 10, freq: "daily", moments: ["morning"], assign: "all",
+    fr: "La Tefila", en: "Tefila", he: "תפילה" },
+  { id: "handwash", img: "handwash", cat: "ritual", points: 5, freq: "daily", moments: ["morning", "evening"], assign: "all",
+    fr: "Se laver les mains", en: "Wash hands", he: "לשטוף ידיים" },
+
   // --- rangement ---
   { id: "toys", img: "toys", cat: "tidy", points: 10, freq: "daily", moments: ["evening"], assign: "house",
     fr: "Ranger les jouets", en: "Tidy the toys", he: "לסדר צעצועים" },
+  { id: "room", img: "room", cat: "tidy", points: 10, freq: "daily", moments: ["evening"], assign: "all",
+    fr: "Ranger sa chambre", en: "Tidy your room", he: "לסדר את החדר" },
   { id: "closet", img: "closet", cat: "tidy", points: 10, freq: "weekly", moments: ["any"], assign: "all",
     fr: "Ranger ses vêtements", en: "Put clothes away", he: "לסדר בגדים" },
   { id: "shelf", img: "shelf", cat: "tidy", points: 10, freq: "weekly", moments: ["any"], assign: "house",
@@ -283,13 +301,14 @@ const CATALOG = [
 ];
 
 const CATS = {
+  ritual: { fr: "Rituels du matin", en: "Morning rituals", he: "סדר בוקר" },
   self: { fr: "Matin & soi", en: "Morning & self", he: "בוקר ואישי" },
   kitchen: { fr: "Cuisine", en: "Kitchen", he: "מטבח" },
   clean: { fr: "Ménage", en: "Cleaning", he: "ניקיון" },
   laundry: { fr: "Linge", en: "Laundry", he: "כביסה" },
   tidy: { fr: "Rangement", en: "Tidying", he: "סידור" },
 };
-const CAT_ORDER = ["self", "kitchen", "clean", "laundry", "tidy"];
+const CAT_ORDER = ["ritual", "self", "kitchen", "clean", "laundry", "tidy"];
 
 const LIB = CATALOG.map((c) => c.img);
 
