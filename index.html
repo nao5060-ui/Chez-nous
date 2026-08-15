@@ -107,6 +107,8 @@ const UI = {
     libHint: "Choisis les tâches qui concernent ton foyer. Tu pourras les régler ensuite.",
     library: "Choisir une image", week: "La semaine", recurrence: "Récurrence",
     freqDaily: "Tous les jours", freqWeekly: "1×/semaine", freqDays: "Jours choisis",
+    freqFree: "Sans jour fixe",
+    freeHint: "La tâche reste dans la liste mais n'apparaît aucun jour. On la fait quand on veut, avec « J'ai fait autre chose ».",
     mMorning: "Matin", mEvening: "Soir", mAny: "Journée", moment: "Moment",
     momentHint: "Plusieurs choix possibles : la tâche revient à chaque moment coché.",
     rewards: "Récompenses", newReward: "Proposer une récompense", rwName: "Quelle récompense ?",
@@ -124,9 +126,9 @@ const UI = {
     assign: "Pour qui ?", forHouse: "Pour la maison", forAll: "Pour tous",
     orPick: "Ou choisir une ou plusieurs personnes",
     houseTasks: "Maison — aujourd'hui", houseWeek: "Maison — cette semaine", whoDidIt: "Qui l'a faite ?",
+    bonusBtn: "J'ai fait autre chose", bonusTitle: "Une tâche en plus",
+    bonusHint: "Tout ce que tu fais en plus compte aussi. Choisis une tâche et gagne ses points.",
     kidHint: "« Pour la maison » : la tâche apparaît dans la section Maison, et on choisit qui l'a faite au moment de la cocher.",
-    inUse: "Tâche active", paused: "Tâche en pause",
-    pauseHint: "En pause, elle reste dans la liste mais n'apparaît plus au quotidien.",
     prevWeek: "Semaine précédente", nextWeek: "Semaine suivante", thisWeekBtn: "Cette semaine",
     reallyDone: "Ce qui a été fait", nothingDone: "Rien de coché ce jour-là.", dayTotal: "Total du jour",
     planned: "Prévu ce jour-là",
@@ -160,6 +162,8 @@ const UI = {
     libHint: "Pick the tasks that apply to your home. You can adjust them after.",
     library: "Pick an image", week: "The week", recurrence: "Recurrence",
     freqDaily: "Every day", freqWeekly: "Once a week", freqDays: "Chosen days",
+    freqFree: "No fixed day",
+    freeHint: "The task stays in the list but is not scheduled. Do it whenever, via \"I did something else\".",
     mMorning: "Morning", mEvening: "Evening", mAny: "Daytime", moment: "When",
     momentHint: "Pick several: the task comes back at each selected moment.",
     rewards: "Rewards", newReward: "Suggest a reward", rwName: "Which reward?",
@@ -177,9 +181,9 @@ const UI = {
     assign: "For whom?", forHouse: "For the house", forAll: "For everyone",
     orPick: "Or pick one or more people",
     houseTasks: "Home — today", houseWeek: "Home — this week", whoDidIt: "Who did it?",
+    bonusBtn: "I did something else", bonusTitle: "An extra task",
+    bonusHint: "Anything extra counts too. Pick a task and earn its points.",
     kidHint: "\"For the house\": the task appears in the Home section, and you pick who did it when checking it off.",
-    inUse: "Active task", paused: "Paused task",
-    pauseHint: "Paused, it stays in the list but no longer shows up day to day.",
     prevWeek: "Previous week", nextWeek: "Next week", thisWeekBtn: "This week",
     reallyDone: "What was done", nothingDone: "Nothing logged that day.", dayTotal: "Day total",
     planned: "Planned that day",
@@ -213,6 +217,8 @@ const UI = {
     libHint: "בחרי את המשימות שרלוונטיות לבית שלך.",
     library: "בחרי תמונה", week: "השבוע", recurrence: "תדירות",
     freqDaily: "כל יום", freqWeekly: "פעם בשבוע", freqDays: "ימים נבחרים",
+    freqFree: "בלי יום קבוע",
+    freeHint: "המשימה נשארת ברשימה אך אינה מתוכננת. עושים אותה מתי שרוצים.",
     mMorning: "בוקר", mEvening: "ערב", mAny: "במשך היום", moment: "מתי",
     momentHint: "אפשר לבחור כמה: המשימה חוזרת בכל זמן שנבחר.",
     rewards: "פרסים", newReward: "להציע פרס", rwName: "איזה פרס?",
@@ -230,9 +236,9 @@ const UI = {
     assign: "בשביל מי?", forHouse: "לבית", forAll: "לכולם",
     orPick: "או לבחור אדם אחד או יותר",
     houseTasks: "הבית — היום", houseWeek: "הבית — השבוע", whoDidIt: "מי עשה את זה?",
+    bonusBtn: "עשיתי עוד משהו", bonusTitle: "משימה נוספת",
+    bonusHint: "כל מה שעושים בנוסף נחשב גם. בחרי משימה וקבלי את הנקודות.",
     kidHint: "\"לבית\": המשימה מופיעה בקטע הבית, ובוחרים מי ביצע אותה בעת הסימון.",
-    inUse: "משימה פעילה", paused: "משימה מושהית",
-    pauseHint: "בהשהיה היא נשארת ברשימה אך לא מופיעה ביומיום.",
     prevWeek: "שבוע קודם", nextWeek: "שבוע הבא", thisWeekBtn: "השבוע",
     reallyDone: "מה שבוצע", nothingDone: "לא סומן כלום ביום זה.", dayTotal: "סה״כ ליום",
     planned: "מתוכנן ליום זה",
@@ -465,6 +471,7 @@ function App() {
   const [zoom, setZoom] = useState(null);
   const [zoomIdx, setZoomIdx] = useState(0);
   const [askWho, setAskWho] = useState(null);
+  const [bonusOpen, setBonusOpen] = useState(false);
   const [media, setMedia] = useState({});
   const mediaRef = useRef(null);
   const [mediaFor, setMediaFor] = useState(null);
@@ -631,21 +638,22 @@ function App() {
   const isPast = (off, d) => dayBounds(off, d)[0] <= Date.now();
 
   const today = todayIdx();
-  const isOn = (k) => k.off !== true;
-  const forDay = (d) => tasks.filter((k) => isOn(k) && (k.freq === "daily" || (k.freq === "days" && (k.days || []).includes(d))));
+  /* freq "free" : la tâche existe dans la liste mais n'est prévue
+     aucun jour — on la fait quand on veut, depuis « J'ai fait autre chose » */
+  const forDay = (d) => tasks.filter((k) => k.freq === "daily" || (k.freq === "days" && (k.days || []).includes(d)));
   const todayTasks = forDay(today).filter((k) => visibleFor(k, active?.id));
   const mineToday = todayTasks.filter((k) => !isHouse(k));
   /* la maison est commune : elle ne dépend pas de la personne choisie */
   const houseToday = forDay(today).filter(isHouse);
   const byMoment = (m) => mineToday.filter((k) => momentsOf(k).includes(m));
-  const weeklyAll = tasks.filter((k) => isOn(k) && k.freq === "weekly" && visibleFor(k, active?.id));
+  const weeklyAll = tasks.filter((k) => k.freq === "weekly" && visibleFor(k, active?.id));
   const weekly = weeklyAll.filter((k) => !isHouse(k));
-  const houseWeekly = tasks.filter((k) => isOn(k) && k.freq === "weekly" && isHouse(k));
+  const houseWeekly = tasks.filter((k) => k.freq === "weekly" && isHouse(k));
 
   /* planning : vue de tout le foyer, ou d'une personne */
   const planFilter = (task) => (planWho === "all" ? true : visibleFor(task, planWho));
   const planFor = (d) => forDay(d).filter(planFilter);
-  const planWeekly = () => tasks.filter((k) => isOn(k) && k.freq === "weekly" && planFilter(k));
+  const planWeekly = () => tasks.filter((k) => k.freq === "weekly" && planFilter(k));
   /* une tâche peut porter des médias perso ; le premier sert de vignette */
   const mediaOf = (task) => (task.media || []).map((id) => media[id]).filter(Boolean);
   const src = (task) => {
@@ -853,8 +861,7 @@ function App() {
           }}
           className="flex items-center gap-3 rounded-2xl p-2"
           style={{
-            background: task.off ? C.gris : C.blanc,
-            opacity: task.off ? 0.72 : 1,
+            background: C.blanc,
             transform: `translateX(${rtl ? -dx : dx}px)`,
             transition: swipe && swipe.id === task.id ? "none" : "transform 200ms ease-out",
             boxShadow: armed ? `0 0 0 2px ${C.orange}` : "none",
@@ -879,13 +886,12 @@ function App() {
             <span className="block text-[15px] font-bold leading-tight"
               style={{
                 color: done && mode === "log" ? C.encreDoux : C.encre,
-                textDecoration: task.off ? "line-through" : "none",
               }}>
               {label(task)}
             </span>
             <span className="text-[11px] font-bold" style={{ color: C.encreDoux }}>
-              {task.off ? t.paused : assignLabel(task)}
-              {!task.off && assignTotal(task) > 1 && ` · ${doneCount(task, mom)}/${assignTotal(task)}`}
+              {task.freq === "free" ? `${t.freqFree} · ${assignLabel(task)}` : assignLabel(task)}
+              {assignTotal(task) > 1 && ` · ${doneCount(task, mom)}/${assignTotal(task)}`}
             </span>
           </div>
         )}
@@ -1086,6 +1092,10 @@ function App() {
             <Chip key={k} on={task.freq === k} color={C.violet} onClick={() => up({ freq: k })}>{lb}</Chip>
           ))}
         </div>
+        <div className="mt-1.5">
+          <Chip on={task.freq === "free"} color={C.encreDoux} onClick={() => up({ freq: "free" })}>{t.freqFree}</Chip>
+        </div>
+        <p className="mt-1 text-[10px] leading-snug" style={{ color: C.encreDoux }}>{t.freeHint}</p>
 
         {task.freq === "days" && (
           <div className="mt-1.5 flex gap-1">
@@ -1122,21 +1132,6 @@ function App() {
             <p className="mt-1 text-[10px]" style={{ color: C.encreDoux }}>{t.momentHint}</p>
           </>
         )}
-
-        <button onClick={() => up({ off: !task.off })}
-          className="mt-3 flex w-full items-center gap-3 rounded-2xl px-3 py-2.5"
-          style={{ background: task.off ? C.gris : C.blanc, boxShadow: `inset 0 0 0 2px ${C.grisF}` }}>
-          <span className="flex-1 text-start text-[12px] font-extrabold"
-            style={{ color: task.off ? C.encreDoux : C.encre }}>
-            {task.off ? t.paused : t.inUse}
-          </span>
-          <span className="flex h-6 w-11 items-center rounded-full px-0.5 transition"
-            style={{ background: task.off ? C.grisF : C.turquoise }}>
-            <span className="h-5 w-5 rounded-full bg-white transition"
-              style={{ marginInlineStart: task.off ? 0 : "22px" }} />
-          </span>
-        </button>
-        <p className="mt-1 text-[10px]" style={{ color: C.encreDoux }}>{t.pauseHint}</p>
 
         <div className="mt-3 flex items-center gap-2">
           <span className="text-[10px] font-extrabold uppercase tracking-widest" style={{ color: C.encreDoux }}>{t.points}</span>
@@ -1383,6 +1378,16 @@ function App() {
                 <Section title={t.weekTasks} color={C.orange} items={weekly} off={1} />
                 <Section title={t.houseTasks} color={C.turquoise} items={houseToday} off={2} mom="any" />
                 <Section title={t.houseWeek} color={C.orange} items={houseWeekly} off={1} />
+
+                {/* faire plus que ce qui est demandé */}
+                {active && tasks.length > 0 && (
+                  <button onClick={() => setBonusOpen(true)}
+                    className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl py-4 transition active:scale-[.99]"
+                    style={{ background: C.blanc, border: `2.5px dashed ${C.violet}`, color: C.violet }}>
+                    <span className="text-lg">⭐</span>
+                    <span className="text-sm font-extrabold">{t.bonusBtn}</span>
+                  </button>
+                )}
 
                 {/* rien de prévu : on renvoie vers la bibliothèque */}
                 {tasks.length === 0 && (
@@ -1942,7 +1947,7 @@ function App() {
                         <div className="flex-1">
                           <span className="block text-[15px] font-bold leading-tight">{c[lang]}</span>
                           <span className="text-[11px] font-bold" style={{ color: C.encreDoux }}>
-                            {c.freq === "daily" ? t.freqDaily : c.freq === "weekly" ? t.freqWeekly : t.freqDays}
+                            {c.freq === "daily" ? t.freqDaily : c.freq === "weekly" ? t.freqWeekly : c.freq === "free" ? t.freqFree : t.freqDays}
                             {` · ${c.points} ${t.points}`}
                           </span>
                         </div>
@@ -1966,6 +1971,84 @@ function App() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* en faire plus : tout ce qui n'est pas déjà proposé à cette personne */}
+      {bonusOpen && active && (
+        <div className="fade-in fixed inset-0 z-40 flex flex-col" style={{ background: C.gris }}>
+          <div className="flex items-center gap-3 px-4 pb-3 pt-5" style={{ background: C.blanc }}>
+            <Avatar a={active.avatar} size={36} />
+            <div className="flex-1">
+              <h2 className="text-base font-black leading-tight" style={{ fontFamily: "Nunito, Assistant, sans-serif" }}>
+                {t.bonusTitle}
+              </h2>
+              <p className="text-[11px] font-bold" style={{ color: C.encreDoux }}>{active.name}</p>
+            </div>
+            <button onClick={() => setBonusOpen(false)}
+              className="rounded-full px-4 py-2 text-sm font-extrabold"
+              style={{ background: C.violet, color: "#fff" }}>{t.close}</button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto px-4 pb-8 pt-4">
+            <p className="mb-3 text-[12px]" style={{ color: C.encreDoux }}>{t.bonusHint}</p>
+            {CAT_ORDER.map((cat) => {
+              const ids = CATALOG.filter((c) => c.cat === cat).map((c) => c.id);
+              const list = tasks.filter((k) => ids.includes(k.id));
+              if (!list.length) return null;
+              return (
+                <div key={cat} className="mb-5">
+                  <p className="mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: C.violet }}>
+                    {CATS[cat][lang]}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {list.map((task) => (
+                      <div key={task.id} className="flex items-center gap-3 rounded-2xl p-2" style={{ background: C.blanc }}>
+                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl" style={{ background: C.gris }}>
+                          <img src={src(task)} alt="" className="h-full w-full object-cover" />
+                        </div>
+                        <span className="flex-1 text-[15px] font-bold leading-tight">{label(task)}</span>
+                        <button onClick={() => { logTask(task, "any", active.id); setBonusOpen(false); }}
+                          className="rounded-full px-4 py-2 text-xs font-extrabold transition active:scale-95"
+                          style={{ background: C.violet, color: "#fff" }}>
+                          +{task.points}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* les tâches créées à la main, hors catalogue */}
+            {(() => {
+              const ids = CATALOG.map((c) => c.id);
+              const perso = tasks.filter((k) => !ids.includes(k.id));
+              if (!perso.length) return null;
+              return (
+                <div className="mb-5">
+                  <p className="mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: C.violet }}>
+                    {t.catalog}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {perso.map((task) => (
+                      <div key={task.id} className="flex items-center gap-3 rounded-2xl p-2" style={{ background: C.blanc }}>
+                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl" style={{ background: C.gris }}>
+                          <img src={src(task)} alt="" className="h-full w-full object-cover" />
+                        </div>
+                        <span className="flex-1 text-[15px] font-bold leading-tight">{label(task)}</span>
+                        <button onClick={() => { logTask(task, "any", active.id); setBonusOpen(false); }}
+                          className="rounded-full px-4 py-2 text-xs font-extrabold transition active:scale-95"
+                          style={{ background: C.violet, color: "#fff" }}>
+                          +{task.points}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
