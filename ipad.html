@@ -1,0 +1,4622 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Chez nous</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#00B2A9" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Chez nous" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<link rel="manifest" href="manifest.json" />
+<style>
+
+*,*::before,*::after{box-sizing:border-box}
+html,body,#root{height:100%}
+body{margin:0;background:#E8ECF1;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;
+  -webkit-appearance:none;border-radius:0}
+input{font:inherit;border:0;-webkit-appearance:none}
+img,svg,video{display:block;max-width:100%}
+p,h1,h2{margin:0}
+
+/* Replis pour les moteurs anciens : pas de CSS Grid avant Safari 10.1,
+   pas de gap flex avant Safari 14. La classe no-gap est posée par le
+   script quand le navigateur ne sait pas gerer gap. */
+.no-gap .grid{display:-webkit-box;display:-webkit-flex;display:flex;
+  -webkit-flex-wrap:wrap;flex-wrap:wrap}
+.no-gap .grid>*+*{margin-left:0}
+.no-gap .grid-cols-4>*{width:25%;padding:2px}
+.no-gap .aspect-square{height:auto}
+
+.-end-1{right:-.25rem}
+.-mx-4{margin-left:-1rem;margin-right:-1rem}
+.-top-1{top:-.25rem}
+.absolute{position:absolute}
+.active\:scale-95:active{-webkit-transform:scale(0.95);transform:scale(0.95)}
+.active\:scale-\[\.98\]:active{-webkit-transform:scale(0.98);transform:scale(0.98)}
+.active\:scale-\[\.99\]:active{-webkit-transform:scale(0.99);transform:scale(0.99)}
+.aspect-square{aspect-ratio:1/1}
+.block{display:block}
+.bottom-0{bottom:0}
+.bottom-0\.5{bottom:.125rem}
+.bottom-24{bottom:6rem}
+.end-0{right:0}
+.end-2{right:.5rem}
+.fixed{position:fixed}
+.flex{display:flex}
+.flex-1{-webkit-box-flex:1;-webkit-flex:1 1 0%;flex:1 1 0%}
+.flex-col{-webkit-box-orient:vertical;-webkit-flex-direction:column;flex-direction:column}
+.flex-wrap{-webkit-flex-wrap:wrap;flex-wrap:wrap}
+.font-black{font-weight:900}
+.font-bold{font-weight:700}
+.font-extrabold{font-weight:800}
+.font-semibold{font-weight:600}
+.gap-0\.5{gap:0.125rem}.no-gap .gap-0\.5{gap:0}.no-gap .gap-0\.5>*+*{margin-left:0.125rem}.no-gap .gap-0\.5.flex-col>*+*{margin-left:0;margin-top:0.125rem}
+.gap-1{gap:0.25rem}.no-gap .gap-1{gap:0}.no-gap .gap-1>*+*{margin-left:0.25rem}.no-gap .gap-1.flex-col>*+*{margin-left:0;margin-top:0.25rem}
+.gap-1\.5{gap:0.375rem}.no-gap .gap-1\.5{gap:0}.no-gap .gap-1\.5>*+*{margin-left:0.375rem}.no-gap .gap-1\.5.flex-col>*+*{margin-left:0;margin-top:0.375rem}
+.gap-2{gap:0.5rem}.no-gap .gap-2{gap:0}.no-gap .gap-2>*+*{margin-left:0.5rem}.no-gap .gap-2.flex-col>*+*{margin-left:0;margin-top:0.5rem}
+.gap-3{gap:0.75rem}.no-gap .gap-3{gap:0}.no-gap .gap-3>*+*{margin-left:0.75rem}.no-gap .gap-3.flex-col>*+*{margin-left:0;margin-top:0.75rem}
+.gap-6{gap:1.5rem}.no-gap .gap-6{gap:0}.no-gap .gap-6>*+*{margin-left:1.5rem}.no-gap .gap-6.flex-col>*+*{margin-left:0;margin-top:1.5rem}
+.grid{display:grid}
+.grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.h-11{height:2.75rem}
+.h-12{height:3rem}
+.h-16{height:4rem}
+.h-2\.5{height:0.625rem}
+.h-3{height:0.75rem}
+.h-5{height:1.25rem}
+.h-9{height:2.25rem}
+.h-full{height:100%}
+.inset-0{top:0;right:0;bottom:0;left:0}
+.inset-x-0{left:0;right:0}
+.inset-x-4{left:1rem;right:1rem}
+.inset-y-0{top:0;bottom:0}
+.items-center{-webkit-box-align:center;-webkit-align-items:center;align-items:center}
+.items-end{-webkit-align-items:flex-end;align-items:flex-end}
+.justify-around{-webkit-justify-content:space-around;justify-content:space-around}
+.justify-between{-webkit-justify-content:space-between;justify-content:space-between}
+.justify-center{-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center}
+.leading-snug{line-height:1.375}
+.leading-tight{line-height:1.25}
+.max-w-md{max-width:28rem}
+.max-w-sm{max-width:24rem}
+.max-w-xs{max-width:20rem}
+.mb-1{margin-bottom:0.25rem}
+.mb-1\.5{margin-bottom:0.375rem}
+.mb-2{margin-bottom:0.5rem}
+.mb-3{margin-bottom:0.75rem}
+.mb-4{margin-bottom:1rem}
+.mb-5{margin-bottom:1.25rem}
+.min-h-screen{min-height:100vh}
+.mt-0\.5{margin-top:0.125rem}
+.mt-1{margin-top:0.25rem}
+.mt-1\.5{margin-top:0.375rem}
+.mt-10{margin-top:2.5rem}
+.mt-2{margin-top:0.5rem}
+.mt-3{margin-top:0.75rem}
+.mt-4{margin-top:1rem}
+.mt-5{margin-top:1.25rem}
+.mt-6{margin-top:1.5rem}
+.mt-7{margin-top:1.75rem}
+.mt-8{margin-top:2rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.object-cover{object-fit:cover}
+.opacity-40{opacity:.4}
+.outline-none{outline:none}
+.overflow-hidden{overflow:hidden}
+.overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.overflow-y-auto{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.p-1{padding:0.25rem}
+.p-2{padding:0.5rem}
+.p-2\.5{padding:0.625rem}
+.p-3{padding:0.75rem}
+.p-4{padding:1rem}
+.p-5{padding:1.25rem}
+.p-6{padding:1.5rem}
+.p-8{padding:2rem}
+.pb-1{padding-bottom:0.25rem}
+.pb-2{padding-bottom:0.5rem}
+.pb-28{padding-bottom:7rem}
+.pb-3{padding-bottom:0.75rem}
+.pb-4{padding-bottom:1rem}
+.pb-8{padding-bottom:2rem}
+.pe-3{padding-right:0.75rem}
+.pe-4{padding-right:1rem}
+.pe-5{padding-right:1.25rem}
+.pointer-events-none{pointer-events:none}
+.ps-1\.5{padding-left:0.375rem}
+.pt-1{padding-top:0.25rem}
+.pt-2{padding-top:0.5rem}
+.pt-4{padding-top:1rem}
+.pt-5{padding-top:1.25rem}
+.px-1{padding-left:0.25rem;padding-right:0.25rem}
+.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}
+.px-2{padding-left:0.5rem;padding-right:0.5rem}
+.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}
+.px-3{padding-left:0.75rem;padding-right:0.75rem}
+.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}
+.px-4{padding-left:1rem;padding-right:1rem}
+.py-1{padding-top:0.25rem;padding-bottom:0.25rem}
+.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}
+.py-2{padding-top:0.5rem;padding-bottom:0.5rem}
+.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}
+.py-3{padding-top:0.75rem;padding-bottom:0.75rem}
+.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}
+.py-4{padding-top:1rem;padding-bottom:1rem}
+.relative{position:relative}
+.rounded-2xl{border-radius:1rem}
+.rounded-3xl{border-radius:1.5rem}
+.rounded-full{border-radius:9999px}
+.rounded-lg{border-radius:.5rem}
+.rounded-xl{border-radius:.75rem}
+.shrink-0{-webkit-flex-shrink:0;flex-shrink:0}
+.start-1{left:.25rem}
+.text-2xl{font-size:1.5rem;line-height:2rem}
+.text-3xl{font-size:1.875rem;line-height:2.25rem}
+.text-\[10px\]{font-size:10px;line-height:1.35}
+.text-\[11px\]{font-size:11px;line-height:1.35}
+.text-\[12px\]{font-size:12px;line-height:1.35}
+.text-\[13px\]{font-size:13px;line-height:1.35}
+.text-\[15px\]{font-size:15px;line-height:1.35}
+.text-base{font-size:1rem;line-height:1.5rem}
+.text-center{text-align:center}
+.text-end{text-align:right}
+.text-lg{font-size:1.125rem;line-height:1.75rem}
+.text-sm{font-size:0.875rem;line-height:1.25rem}
+.text-start{text-align:left}
+.text-xl{font-size:1.25rem;line-height:1.75rem}
+.text-xs{font-size:0.75rem;line-height:1rem}
+.top-2{top:.5rem}
+.tracking-\[0\.14em\]{letter-spacing:0.14em}
+.tracking-\[0\.1em\]{letter-spacing:0.1em}
+.tracking-tight{letter-spacing:-.025em}
+.tracking-widest{letter-spacing:.1em}
+.transition{-webkit-transition:all .15s ease;transition:all .15s ease}
+.transition-all{-webkit-transition:all .15s ease;transition:all .15s ease}
+.underline{text-decoration:underline}
+.uppercase{text-transform:uppercase}
+.w-11{width:2.75rem}
+.w-12{width:3rem}
+.w-16{width:4rem}
+.w-5{width:1.25rem}
+.w-9{width:2.25rem}
+.w-\[46\%\]{width:46%}
+.w-fit{width:auto}
+.w-full{width:100%}
+.z-20{z-index:20}
+.z-30{z-index:30}
+.z-40{z-index:40}
+
+body{font-family:Assistant,"Helvetica Neue",Helvetica,Arial,sans-serif}
+#boot{display:-webkit-box;display:flex;height:100%%;-webkit-box-align:center;
+  -webkit-align-items:center;align-items:center;-webkit-box-pack:center;
+  -webkit-justify-content:center;justify-content:center;color:#64748B;
+  font-weight:700;padding:24px;text-align:center;font-size:14px;line-height:1.5}
+.motion-safe{}
+</style>
+
+<script>
+
+function showErr(msg) {
+  var b = document.getElementById('boot');
+  if (b) {
+    b.style.color = '#B3261E'; b.style.textAlign = 'left';
+    b.style.alignItems = 'flex-start'; b.style.fontSize = '12px';
+    b.innerHTML = 'ERREUR<br><br>' + String(msg).replace(/\n/g, '<br>');
+  }
+}
+window.onerror = function (msg, file, line) {
+  showErr(msg + '\n\n' + (file || '') + '\nligne ' + (line || '?'));
+};
+setTimeout(function () {
+  var b = document.getElementById('boot');
+  if (b && b.innerHTML.indexOf('ERREUR') === -1) {
+    showErr('Rien apres 25 s.\n\nReact : ' + (window.React ? 'OK' : 'ABSENT')
+      + '\nReactDOM : ' + (window.ReactDOM ? 'OK' : 'ABSENT')
+      + '\nImages : ' + (window.IMG ? Object.keys(window.IMG).length + ' OK' : 'ABSENT'));
+  }
+}, 25000);
+
+
+/* Compléments pour les navigateurs anciens (iOS 9). Chacun ne
+   s'installe que s'il manque, donc sans effet ailleurs. */
+(function () {
+  if (!Array.prototype.includes) {
+    Array.prototype.includes = function (x, from) {
+      return this.indexOf(x, from || 0) !== -1;
+    };
+  }
+  if (!String.prototype.includes) {
+    String.prototype.includes = function (x, from) {
+      return this.indexOf(x, from || 0) !== -1;
+    };
+  }
+  if (!Object.fromEntries) {
+    Object.fromEntries = function (list) {
+      var o = {}, a = Array.prototype.slice.call(list), i;
+      for (i = 0; i < a.length; i++) o[a[i][0]] = a[i][1];
+      return o;
+    };
+  }
+  if (!Object.entries) {
+    Object.entries = function (o) {
+      var r = [], k;
+      for (k in o) if (Object.prototype.hasOwnProperty.call(o, k)) r.push([k, o[k]]);
+      return r;
+    };
+  }
+  if (!Object.assign) {
+    Object.assign = function (t) {
+      var i, s, k;
+      for (i = 1; i < arguments.length; i++) {
+        s = arguments[i];
+        if (s) for (k in s) if (Object.prototype.hasOwnProperty.call(s, k)) t[k] = s[k];
+      }
+      return t;
+    };
+  }
+  if (!Array.prototype.find) {
+    Array.prototype.find = function (f, thisArg) {
+      for (var i = 0; i < this.length; i++)
+        if (f.call(thisArg, this[i], i, this)) return this[i];
+      return undefined;
+    };
+  }
+  if (!Array.prototype.findIndex) {
+    Array.prototype.findIndex = function (f, thisArg) {
+      for (var i = 0; i < this.length; i++)
+        if (f.call(thisArg, this[i], i, this)) return i;
+      return -1;
+    };
+  }
+  /* flexbox gap : absent avant Safari 14, on bascule sur des marges */
+  try {
+    var d = document.createElement("div");
+    d.style.display = "flex";
+    d.style.gap = "1px";
+    if (d.style.gap !== "1px") {
+      document.documentElement.className += " no-gap";
+    }
+  } catch (e) {
+    document.documentElement.className += " no-gap";
+  }
+})();
+
+</script>
+
+<script src="react.js?v=18"></script>
+<script src="react-dom.js?v=18"></script>
+<script src="images.js?v=54"></script>
+</head>
+<body>
+<div id="root"><div id="boot">Chargement...</div></div>
+<script>
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useMemo = _React.useMemo,
+  useRef = _React.useRef;
+
+/* IMG vient de images.js */
+/* DROPS_IMG vient de images.js */
+
+var C = {
+  encre: "#101B2D",
+  encreDoux: "#64748B",
+  blanc: "#FFFFFF",
+  gris: "#E8ECF1",
+  grisF: "#D3DAE3",
+  turquoise: "#00B2A9",
+  violet: "#6C3FD4",
+  orange: "#FF7A1A"
+};
+var ACCENTS = [C.turquoise, C.violet, C.orange];
+
+/* gouttes colorées proposées comme avatar */
+var DROPS = ["#00B2A9", "#6C3FD4", "#FF7A1A", "#E8467C", "#2F80ED", "#2FAF5A", "#F2B705", "#64748B"];
+var EMOJIS = ["🦊", "🐨", "🦉", "🐙", "🦁", "🐢", "🦄", "🐝"];
+var LANGS = [{
+  id: "fr",
+  label: "FR"
+}, {
+  id: "en",
+  label: "EN"
+}, {
+  id: "he",
+  label: "עב"
+}];
+var UI = {
+  fr: {
+    app: "Chez nous",
+    setupTitle: "Qui habite ici ?",
+    setupHint: "Ajoute chaque personne du foyer.",
+    name: "Prénom",
+    child: "Enfant",
+    adult: "Adulte",
+    add: "Ajouter",
+    save: "Enregistrer",
+    home: "Accueil",
+    tasks: "Tâches",
+    plan: "Planning",
+    settings: "Réglages",
+    scores: "Points de la semaine",
+    morning: "Ce matin",
+    evening: "Ce soir",
+    anyTime: "Dans la journée",
+    weekTasks: "Cette semaine",
+    allDone: "Tout est fait",
+    noDay: "Rien de prévu",
+    catalog: "Mes tâches",
+    newTask: "Nouvelle tâche",
+    taskName: "Nom de la tâche",
+    library: "Bibliothèque",
+    added: "Ajoutée",
+    addFromLib: "Choisir dans la bibliothèque",
+    createTask: "Créer une tâche",
+    emptyTasks: "Aucune tâche pour l'instant. Touche le + pour en ajouter.",
+    cancel: "Annuler",
+    addTask: "Ajouter une tâche",
+    overview: "Vue d'ensemble",
+    tasksDone: "tâches cette semaine",
+    addMore: "Ajouter d'autres personnes à la famille",
+    noTasksYet: "Aucune tâche prévue pour l'instant",
+    goAddTasks: "Choisir des tâches",
+    overviewHint: "Les points repartent de zéro chaque lundi.",
+    welcomeTitle: "Bienvenue chez vous",
+    welcomeHint: "Commencez par ajouter les personnes qui vivent ici. Chacune aura sa goutte et ses points.",
+    addFamily: "Ajouter votre famille",
+    begin: "Commencer",
+    next: "Suivant",
+    finish: "C'est parti",
+    skip: "Passer cette étape",
+    stepOf: "Étape {n} sur 2",
+    setupTasks: "Vos premières tâches",
+    setupTasksHint: "Choisissez celles que votre foyer fait vraiment. Rien n'est figé.",
+    laterMembers: "Plus tard, vous gérerez les membres dans l'onglet Réglages.",
+    laterTasks: "Plus tard, vous ajouterez ou modifierez les tâches dans l'onglet Tâches.",
+    whoChecks: "Qui coche ?",
+    myMedia: "Mes photos et vidéos",
+    addMedia: "Ajouter",
+    noMedia: "Aucune pour l'instant",
+    videoTooBig: "Vidéo trop lourde (3 Mo maximum). Filme plus court.",
+    errorFull: "Mémoire pleine. Supprime des photos ou des vidéos.",
+    mediaHint: "Elles remplacent l'illustration et s'ouvrent en grand.",
+    libHint: "Choisis les tâches qui concernent ton foyer. Tu pourras les régler ensuite.",
+    library: "Choisir une image",
+    week: "La semaine",
+    recurrence: "Récurrence",
+    freqDaily: "Tous les jours",
+    freqWeekly: "1×/semaine",
+    freqDays: "Jours choisis",
+    freqFree: "Sans jour fixe",
+    freeHint: "La tâche reste dans la liste mais n'apparaît aucun jour. On la fait quand on veut, avec « J'ai fait autre chose ».",
+    mMorning: "Matin",
+    mEvening: "Soir",
+    mAny: "Journée",
+    moment: "Moment",
+    momentHint: "Plusieurs choix possibles : la tâche revient à chaque moment coché.",
+    rewards: "Récompenses",
+    newReward: "Proposer une récompense",
+    rwName: "Quelle récompense ?",
+    rwCost: "Points nécessaires",
+    rwAgree: "D'accord",
+    rwAgreed: "d'accord",
+    rwPending: "En attente de l'accord de tous",
+    rwReady: "Validée par tout le monde",
+    rwClaim: "Échanger",
+    rwNone: "Aucune récompense pour l'instant. Proposez-en une ensemble.",
+    rwNext: "Prochaine récompense",
+    rwGot: "Récompense obtenue",
+    rwHint: "Chacun doit être d'accord pour qu'une récompense compte.",
+    days: ["L", "M", "M", "J", "V", "S", "D"],
+    dayFull: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+    undo: "Annuler",
+    remove: "Supprimer",
+    people: "Foyer",
+    rename: "Renommer",
+    resetWeek: "Remettre la semaine à zéro",
+    loading: "Chargement…",
+    errorSave: "Enregistrement impossible.",
+    points: "pts",
+    history: "Historique",
+    nothing: "Rien cette semaine.",
+    photo: "Photo",
+    drops: "Gouttes",
+    figures: "Figurines",
+    avatar: "Avatar",
+    assign: "Pour qui ?",
+    forHouse: "Pour la maison",
+    forAll: "Pour tous",
+    orPick: "Ou choisir une ou plusieurs personnes",
+    houseTasks: "Maison — aujourd'hui",
+    houseWeek: "Maison — cette semaine",
+    whoDidIt: "Qui l'a faite ?",
+    bonusBtn: "J'ai fait autre chose",
+    bonusTitle: "Une tâche en plus",
+    bonusHint: "Tout ce que tu fais en plus compte aussi. Choisis une tâche et gagne ses points.",
+    kidHint: "« Pour la maison » : la tâche apparaît dans la section Maison, et on choisit qui l'a faite au moment de la cocher.",
+    prevWeek: "Semaine précédente",
+    nextWeek: "Semaine suivante",
+    thisWeekBtn: "Cette semaine",
+    reallyDone: "Ce qui a été fait",
+    nothingDone: "Rien de coché ce jour-là.",
+    dayTotal: "Total du jour",
+    planned: "Prévu ce jour-là",
+    everyone: "Tous",
+    edit: "Modifier",
+    image: "Dessin de la tâche",
+    close: "Fermer",
+    done: "fait"
+  },
+  en: {
+    app: "Our home",
+    setupTitle: "Who lives here?",
+    setupHint: "Add everyone in the household.",
+    name: "First name",
+    child: "Child",
+    adult: "Adult",
+    add: "Add",
+    save: "Save",
+    home: "Home",
+    tasks: "Tasks",
+    plan: "Plan",
+    settings: "Settings",
+    scores: "Points this week",
+    morning: "This morning",
+    evening: "This evening",
+    anyTime: "During the day",
+    weekTasks: "This week",
+    allDone: "All done",
+    noDay: "Nothing planned",
+    catalog: "My tasks",
+    newTask: "New task",
+    taskName: "Task name",
+    library: "Library",
+    added: "Added",
+    addFromLib: "Pick from the library",
+    createTask: "Create a task",
+    emptyTasks: "No tasks yet. Tap + to add some.",
+    cancel: "Cancel",
+    addTask: "Add a task",
+    overview: "Overview",
+    tasksDone: "tasks this week",
+    addMore: "Add more people to the family",
+    noTasksYet: "No tasks planned yet",
+    goAddTasks: "Pick some tasks",
+    overviewHint: "Points reset every Monday.",
+    welcomeTitle: "Welcome home",
+    welcomeHint: "Start by adding the people who live here. Each one gets their own drop and points.",
+    addFamily: "Add your family",
+    begin: "Get started",
+    next: "Next",
+    finish: "Let's go",
+    skip: "Skip this step",
+    stepOf: "Step {n} of 2",
+    setupTasks: "Your first tasks",
+    setupTasksHint: "Pick the ones your home actually does. Nothing is set in stone.",
+    laterMembers: "Later, you'll manage members in the Settings tab.",
+    laterTasks: "Later, you'll add or edit tasks in the Tasks tab.",
+    whoChecks: "Who's checking?",
+    myMedia: "My photos and videos",
+    addMedia: "Add",
+    noMedia: "None yet",
+    videoTooBig: "Video too large (3 MB max). Record a shorter one.",
+    errorFull: "Storage full. Remove some photos or videos.",
+    mediaHint: "They replace the illustration and open full screen.",
+    libHint: "Pick the tasks that apply to your home. You can adjust them after.",
+    library: "Pick an image",
+    week: "The week",
+    recurrence: "Recurrence",
+    freqDaily: "Every day",
+    freqWeekly: "Once a week",
+    freqDays: "Chosen days",
+    freqFree: "No fixed day",
+    freeHint: "The task stays in the list but is not scheduled. Do it whenever, via \"I did something else\".",
+    mMorning: "Morning",
+    mEvening: "Evening",
+    mAny: "Daytime",
+    moment: "When",
+    momentHint: "Pick several: the task comes back at each selected moment.",
+    rewards: "Rewards",
+    newReward: "Suggest a reward",
+    rwName: "Which reward?",
+    rwCost: "Points needed",
+    rwAgree: "Agree",
+    rwAgreed: "agreed",
+    rwPending: "Waiting for everyone to agree",
+    rwReady: "Everyone agreed",
+    rwClaim: "Redeem",
+    rwNone: "No rewards yet. Suggest one together.",
+    rwNext: "Next reward",
+    rwGot: "Reward claimed",
+    rwHint: "Everyone must agree before a reward counts.",
+    days: ["M", "T", "W", "T", "F", "S", "S"],
+    dayFull: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    undo: "Undo",
+    remove: "Remove",
+    people: "Household",
+    rename: "Rename",
+    resetWeek: "Reset the week",
+    loading: "Loading…",
+    errorSave: "Could not save.",
+    points: "pts",
+    history: "History",
+    nothing: "Nothing this week.",
+    photo: "Photo",
+    drops: "Drops",
+    figures: "Figures",
+    avatar: "Avatar",
+    assign: "For whom?",
+    forHouse: "For the house",
+    forAll: "For everyone",
+    orPick: "Or pick one or more people",
+    houseTasks: "Home — today",
+    houseWeek: "Home — this week",
+    whoDidIt: "Who did it?",
+    bonusBtn: "I did something else",
+    bonusTitle: "An extra task",
+    bonusHint: "Anything extra counts too. Pick a task and earn its points.",
+    kidHint: "\"For the house\": the task appears in the Home section, and you pick who did it when checking it off.",
+    prevWeek: "Previous week",
+    nextWeek: "Next week",
+    thisWeekBtn: "This week",
+    reallyDone: "What was done",
+    nothingDone: "Nothing logged that day.",
+    dayTotal: "Day total",
+    planned: "Planned that day",
+    everyone: "All",
+    edit: "Edit",
+    image: "Task drawing",
+    close: "Close",
+    done: "done"
+  },
+  he: {
+    app: "הבית שלנו",
+    setupTitle: "מי גר כאן?",
+    setupHint: "הוסיפי את כל בני הבית.",
+    name: "שם",
+    child: "ילד",
+    adult: "מבוגר",
+    add: "הוספה",
+    save: "שמירה",
+    home: "בית",
+    tasks: "משימות",
+    plan: "תכנון",
+    settings: "הגדרות",
+    scores: "נקודות השבוע",
+    morning: "הבוקר",
+    evening: "הערב",
+    anyTime: "במהלך היום",
+    weekTasks: "השבוע",
+    allDone: "הכול נעשה",
+    noDay: "אין משימות",
+    catalog: "המשימות שלי",
+    newTask: "משימה חדשה",
+    taskName: "שם המשימה",
+    library: "ספרייה",
+    added: "נוספה",
+    addFromLib: "בחירה מהספרייה",
+    createTask: "יצירת משימה",
+    emptyTasks: "אין עדיין משימות. הקישי על + כדי להוסיף.",
+    cancel: "ביטול",
+    addTask: "הוספת משימה",
+    overview: "מבט כללי",
+    tasksDone: "משימות השבוע",
+    addMore: "להוסיף עוד בני משפחה",
+    noTasksYet: "אין עדיין משימות מתוכננות",
+    goAddTasks: "לבחור משימות",
+    overviewHint: "הנקודות מתאפסות בכל יום שני.",
+    welcomeTitle: "ברוכים הבאים הביתה",
+    welcomeHint: "התחילי בהוספת בני הבית. לכל אחד תהיה טיפה ונקודות משלו.",
+    addFamily: "הוספת המשפחה",
+    begin: "מתחילים",
+    next: "הבא",
+    finish: "יוצאים לדרך",
+    skip: "לדלג",
+    stepOf: "שלב {n} מתוך 2",
+    setupTasks: "המשימות הראשונות",
+    setupTasksHint: "בחרי את מה שהבית שלך באמת עושה.",
+    laterMembers: "בהמשך תנהלי את בני הבית בלשונית הגדרות.",
+    laterTasks: "בהמשך תוסיפי או תערכי משימות בלשונית משימות.",
+    whoChecks: "מי מסמן?",
+    myMedia: "התמונות והסרטונים שלי",
+    addMedia: "הוספה",
+    noMedia: "אין עדיין",
+    videoTooBig: "הסרטון כבד מדי (3 מ״ב לכל היותר).",
+    errorFull: "אין מקום. מחקי תמונות או סרטונים.",
+    mediaHint: "הם מחליפים את האיור ונפתחים במסך מלא.",
+    libHint: "בחרי את המשימות שרלוונטיות לבית שלך.",
+    library: "בחרי תמונה",
+    week: "השבוע",
+    recurrence: "תדירות",
+    freqDaily: "כל יום",
+    freqWeekly: "פעם בשבוע",
+    freqDays: "ימים נבחרים",
+    freqFree: "בלי יום קבוע",
+    freeHint: "המשימה נשארת ברשימה אך אינה מתוכננת. עושים אותה מתי שרוצים.",
+    mMorning: "בוקר",
+    mEvening: "ערב",
+    mAny: "במשך היום",
+    moment: "מתי",
+    momentHint: "אפשר לבחור כמה: המשימה חוזרת בכל זמן שנבחר.",
+    rewards: "פרסים",
+    newReward: "להציע פרס",
+    rwName: "איזה פרס?",
+    rwCost: "נקודות נדרשות",
+    rwAgree: "מסכים",
+    rwAgreed: "מסכימים",
+    rwPending: "ממתין להסכמת כולם",
+    rwReady: "כולם הסכימו",
+    rwClaim: "לממש",
+    rwNone: "אין עדיין פרסים. הציעו פרס יחד.",
+    rwNext: "הפרס הבא",
+    rwGot: "הפרס מומש",
+    rwHint: "כולם צריכים להסכים כדי שפרס ייחשב.",
+    days: ["ב", "ג", "ד", "ה", "ו", "ש", "א"],
+    dayFull: ["שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת", "ראשון"],
+    undo: "ביטול",
+    remove: "מחיקה",
+    people: "בני הבית",
+    rename: "שינוי שם",
+    resetWeek: "איפוס השבוע",
+    loading: "טוען…",
+    errorSave: "השמירה נכשלה.",
+    points: "נק'",
+    history: "היסטוריה",
+    nothing: "אין כלום השבוע.",
+    photo: "תמונה",
+    drops: "טיפות",
+    figures: "דמויות",
+    avatar: "אווטאר",
+    assign: "בשביל מי?",
+    forHouse: "לבית",
+    forAll: "לכולם",
+    orPick: "או לבחור אדם אחד או יותר",
+    houseTasks: "הבית — היום",
+    houseWeek: "הבית — השבוע",
+    whoDidIt: "מי עשה את זה?",
+    bonusBtn: "עשיתי עוד משהו",
+    bonusTitle: "משימה נוספת",
+    bonusHint: "כל מה שעושים בנוסף נחשב גם. בחרי משימה וקבלי את הנקודות.",
+    kidHint: "\"לבית\": המשימה מופיעה בקטע הבית, ובוחרים מי ביצע אותה בעת הסימון.",
+    prevWeek: "שבוע קודם",
+    nextWeek: "שבוע הבא",
+    thisWeekBtn: "השבוע",
+    reallyDone: "מה שבוצע",
+    nothingDone: "לא סומן כלום ביום זה.",
+    dayTotal: "סה״כ ליום",
+    planned: "מתוכנן ליום זה",
+    everyone: "הכול",
+    edit: "עריכה",
+    image: "איור המשימה",
+    close: "סגירה",
+    done: "בוצע"
+  }
+};
+
+/* ============================================================
+   LA BIBLIOTHÈQUE : tout ce qui existe, rangé par famille.
+   Le foyer n'en active qu'une partie — ce sont « mes tâches ».
+   ============================================================ */
+var CATALOG = [
+// --- matin & soi ---
+{
+  id: "teeth",
+  img: "teeth",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["morning", "evening"],
+  assign: "all",
+  fr: "Se brosser les dents",
+  en: "Brush teeth",
+  he: "לצחצח שיניים"
+}, {
+  id: "hair",
+  img: "hair",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "Se coiffer",
+  en: "Brush hair",
+  he: "להסתרק"
+}, {
+  id: "shower",
+  img: "shower",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "all",
+  fr: "Prendre sa douche",
+  en: "Take a shower",
+  he: "להתקלח"
+}, {
+  id: "bed",
+  img: "bed",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "Faire son lit",
+  en: "Make the bed",
+  he: "לסדר מיטה"
+}, {
+  id: "shoeson",
+  img: "shoeson",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "Mettre ses chaussures",
+  en: "Put shoes on",
+  he: "לנעול נעליים"
+}, {
+  id: "schoolbag",
+  img: "schoolbag",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "all",
+  fr: "Préparer son cartable",
+  en: "Pack the schoolbag",
+  he: "להכין ילקוט"
+}, {
+  id: "bag",
+  img: "bag",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "all",
+  fr: "Préparer son sac",
+  en: "Pack the bag",
+  he: "להכין את התיק"
+},
+// --- cuisine ---
+{
+  id: "breakfast",
+  img: "breakfast",
+  cat: "kitchen",
+  points: 10,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "house",
+  fr: "Préparer le petit-déjeuner",
+  en: "Make breakfast",
+  he: "להכין ארוחת בוקר"
+}, {
+  id: "cook",
+  img: "cook",
+  cat: "kitchen",
+  points: 15,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "house",
+  fr: "Préparer le repas",
+  en: "Cook the meal",
+  he: "להכין ארוחה"
+}, {
+  id: "dish",
+  img: "dish",
+  cat: "kitchen",
+  points: 10,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "house",
+  fr: "Remplir le lave-vaisselle",
+  en: "Load the dishwasher",
+  he: "למלא מדיח"
+}, {
+  id: "emptydish",
+  img: "emptydish",
+  cat: "kitchen",
+  points: 10,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "house",
+  fr: "Vider le lave-vaisselle",
+  en: "Empty the dishwasher",
+  he: "לרוקן את המדיח"
+},
+// --- ménage ---
+{
+  id: "vacuum",
+  img: "vacuum",
+  cat: "clean",
+  points: 15,
+  freq: "days",
+  days: [5],
+  moments: ["any"],
+  assign: "house",
+  fr: "Passer l'aspirateur",
+  en: "Vacuum",
+  he: "לשאוב אבק"
+}, {
+  id: "mop",
+  img: "mop",
+  cat: "clean",
+  points: 15,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Passer la serpillière",
+  en: "Mop the floor",
+  he: "לשטוף רצפה"
+}, {
+  id: "floorbot",
+  img: "floorbot",
+  cat: "clean",
+  points: 15,
+  freq: "days",
+  days: [1, 4],
+  moments: ["any"],
+  assign: "house",
+  fr: "Passer le robot laveur",
+  en: "Run the floor washer",
+  he: "להפעיל שוטף הרצפות"
+}, {
+  id: "window",
+  img: "window",
+  cat: "clean",
+  points: 15,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Nettoyer les vitres",
+  en: "Clean the windows",
+  he: "לנקות חלונות"
+}, {
+  id: "trash",
+  img: "trash",
+  cat: "clean",
+  points: 10,
+  freq: "days",
+  days: [1, 4],
+  moments: ["evening"],
+  assign: "house",
+  fr: "Sortir la poubelle",
+  en: "Take out the bin",
+  he: "להוציא אשפה"
+}, {
+  id: "bathshelf",
+  img: "bathshelf",
+  cat: "clean",
+  points: 10,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Ranger la salle de bain",
+  en: "Tidy the bathroom",
+  he: "לסדר את חדר האמבטיה"
+}, {
+  id: "toiletries",
+  img: "toiletries",
+  cat: "clean",
+  points: 5,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Ranger les affaires de toilette",
+  en: "Tidy the toiletries",
+  he: "לסדר מוצרי רחצה"
+}, {
+  id: "custom",
+  img: "custom",
+  cat: "clean",
+  points: 10,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Grand ménage",
+  en: "Deep clean",
+  he: "ניקיון גדול"
+},
+// --- linge ---
+{
+  id: "laundry",
+  img: "laundry",
+  cat: "laundry",
+  points: 10,
+  freq: "days",
+  days: [0, 3],
+  moments: ["any"],
+  assign: "house",
+  fr: "Lancer la machine",
+  en: "Start the laundry",
+  he: "להפעיל מכונת כביסה"
+}, {
+  id: "dryer",
+  img: "dryer",
+  cat: "laundry",
+  points: 10,
+  freq: "days",
+  days: [1, 4],
+  moments: ["any"],
+  assign: "house",
+  fr: "Vider la machine",
+  en: "Empty the machine",
+  he: "לרוקן את המכונה"
+}, {
+  id: "clothesline",
+  img: "clothesline",
+  cat: "laundry",
+  points: 10,
+  freq: "days",
+  days: [1, 4],
+  moments: ["any"],
+  assign: "house",
+  fr: "Étendre le linge",
+  en: "Hang the laundry",
+  he: "לתלות כביסה"
+},
+// --- rituels du matin ---
+{
+  id: "modeani",
+  img: "modeani",
+  cat: "ritual",
+  points: 5,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "Modé Ani",
+  en: "Modeh Ani",
+  he: "מודה אני"
+}, {
+  id: "netilat",
+  img: "netilat",
+  cat: "ritual",
+  points: 5,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "Netilat Yadayim",
+  en: "Netilat Yadayim",
+  he: "נטילת ידיים"
+}, {
+  id: "brachot",
+  img: "brachot",
+  cat: "ritual",
+  points: 5,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "Birkot Hashahar",
+  en: "Birkot Hashachar",
+  he: "ברכות השחר"
+}, {
+  id: "tfila",
+  img: "tfila",
+  cat: "ritual",
+  points: 10,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "La Tefila",
+  en: "Tefila",
+  he: "תפילה"
+}, {
+  id: "handwash",
+  img: "handwash",
+  cat: "ritual",
+  points: 5,
+  freq: "daily",
+  moments: ["morning", "evening"],
+  assign: "all",
+  fr: "Se laver les mains",
+  en: "Wash hands",
+  he: "לשטוף ידיים"
+}, {
+  id: "fruit",
+  img: "fruit",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["any"],
+  assign: "all",
+  fr: "Manger un fruit",
+  en: "Eat a fruit",
+  he: "לאכול פרי"
+}, {
+  id: "water",
+  img: "water",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["any"],
+  assign: "all",
+  fr: "Boire de l'eau",
+  en: "Drink water",
+  he: "לשתות מים"
+}, {
+  id: "bath",
+  img: "bath",
+  cat: "self",
+  points: 5,
+  freq: "days",
+  days: [1, 4, 6],
+  moments: ["evening"],
+  assign: "all",
+  fr: "Prendre un bain",
+  en: "Take a bath",
+  he: "להתרחץ באמבטיה"
+}, {
+  id: "sleep",
+  img: "sleep",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "all",
+  fr: "Aller se coucher à l'heure",
+  en: "Go to bed on time",
+  he: "ללכת לישון בזמן"
+}, {
+  id: "clothes",
+  img: "clothes",
+  cat: "self",
+  points: 5,
+  freq: "daily",
+  moments: ["morning"],
+  assign: "all",
+  fr: "Choisir ses habits",
+  en: "Pick your clothes",
+  he: "לבחור בגדים"
+}, {
+  id: "homework",
+  img: "homework",
+  cat: "self",
+  points: 10,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "all",
+  fr: "Faire ses devoirs",
+  en: "Do your homework",
+  he: "לעשות שיעורי בית"
+}, {
+  id: "draw",
+  img: "draw",
+  cat: "self",
+  points: 5,
+  freq: "free",
+  moments: ["any"],
+  assign: "all",
+  fr: "Dessiner",
+  en: "Draw",
+  he: "לצייר"
+},
+// --- ménage ---
+{
+  id: "sweep",
+  img: "sweep",
+  cat: "clean",
+  points: 10,
+  freq: "days",
+  days: [2, 5],
+  moments: ["any"],
+  assign: "house",
+  fr: "Balayer",
+  en: "Sweep",
+  he: "לטאטא"
+}, {
+  id: "counter",
+  img: "counter",
+  cat: "clean",
+  points: 10,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "house",
+  fr: "Nettoyer le plan de travail",
+  en: "Clean the counter",
+  he: "לנקות את משטח העבודה"
+}, {
+  id: "table",
+  img: "table",
+  cat: "clean",
+  points: 5,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "house",
+  fr: "Essuyer la table",
+  en: "Wipe the table",
+  he: "לנגב את השולחן"
+}, {
+  id: "toilet",
+  img: "toilet",
+  cat: "clean",
+  points: 15,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Nettoyer les toilettes",
+  en: "Clean the toilet",
+  he: "לנקות את השירותים"
+}, {
+  id: "bathfloor",
+  img: "bathfloor",
+  cat: "clean",
+  points: 15,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Laver la salle de bain",
+  en: "Wash the bathroom",
+  he: "לשטוף את חדר האמבטיה"
+}, {
+  id: "bulb",
+  img: "bulb",
+  cat: "clean",
+  points: 10,
+  freq: "free",
+  moments: ["any"],
+  assign: "house",
+  fr: "Changer une ampoule",
+  en: "Change a bulb",
+  he: "להחליף נורה"
+}, {
+  id: "shopping",
+  img: "shopping",
+  cat: "clean",
+  points: 15,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Faire les courses",
+  en: "Do the shopping",
+  he: "לעשות קניות"
+}, {
+  id: "mail",
+  img: "mail",
+  cat: "clean",
+  points: 5,
+  freq: "days",
+  days: [0, 2, 4],
+  moments: ["any"],
+  assign: "house",
+  fr: "Relever le courrier",
+  en: "Get the mail",
+  he: "להוציא דואר"
+},
+// --- linge ---
+{
+  id: "iron",
+  img: "iron",
+  cat: "laundry",
+  points: 15,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Repasser",
+  en: "Iron",
+  he: "לגהץ"
+}, {
+  id: "basket",
+  img: "basket",
+  cat: "laundry",
+  points: 5,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "all",
+  fr: "Mettre son linge au panier",
+  en: "Put clothes in the basket",
+  he: "לשים כביסה בסל"
+}, {
+  id: "socks",
+  img: "socks",
+  cat: "laundry",
+  points: 10,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Assortir les chaussettes",
+  en: "Match the socks",
+  he: "לזווג גרביים"
+}, {
+  id: "towels",
+  img: "towels",
+  cat: "laundry",
+  points: 10,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Plier les serviettes",
+  en: "Fold the towels",
+  he: "לקפל מגבות"
+},
+// --- rangement ---
+{
+  id: "dresser",
+  img: "dresser",
+  cat: "tidy",
+  points: 10,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "all",
+  fr: "Ranger sa commode",
+  en: "Tidy your dresser",
+  he: "לסדר את השידה"
+}, {
+  id: "door",
+  img: "door",
+  cat: "tidy",
+  points: 5,
+  freq: "free",
+  moments: ["any"],
+  assign: "all",
+  fr: "Fermer la porte",
+  en: "Close the door",
+  he: "לסגור את הדלת"
+},
+// --- rangement ---
+{
+  id: "toys",
+  img: "toys",
+  cat: "tidy",
+  points: 10,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "house",
+  fr: "Ranger les jouets",
+  en: "Tidy the toys",
+  he: "לסדר צעצועים"
+}, {
+  id: "room",
+  img: "room",
+  cat: "tidy",
+  points: 10,
+  freq: "daily",
+  moments: ["evening"],
+  assign: "all",
+  fr: "Ranger sa chambre",
+  en: "Tidy your room",
+  he: "לסדר את החדר"
+}, {
+  id: "closet",
+  img: "closet",
+  cat: "tidy",
+  points: 10,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "all",
+  fr: "Ranger ses vêtements",
+  en: "Put clothes away",
+  he: "לסדר בגדים"
+}, {
+  id: "shelf",
+  img: "shelf",
+  cat: "tidy",
+  points: 10,
+  freq: "weekly",
+  moments: ["any"],
+  assign: "house",
+  fr: "Ranger le placard",
+  en: "Tidy the cupboard",
+  he: "לסדר את הארון"
+}, {
+  id: "shoes",
+  img: "shoes",
+  cat: "tidy",
+  points: 5,
+  freq: "daily",
+  moments: ["any"],
+  assign: "all",
+  fr: "Ranger ses chaussures",
+  en: "Put shoes away",
+  he: "לסדר נעליים"
+}, {
+  id: "plants2",
+  img: "plants2",
+  cat: "tidy",
+  points: 5,
+  freq: "days",
+  days: [2, 6],
+  moments: ["any"],
+  assign: "house",
+  fr: "Arroser les plantes",
+  en: "Water the plants",
+  he: "להשקות צמחים"
+}];
+var CATS = {
+  ritual: {
+    fr: "Rituels du matin",
+    en: "Morning rituals",
+    he: "סדר בוקר"
+  },
+  self: {
+    fr: "Matin & soi",
+    en: "Morning & self",
+    he: "בוקר ואישי"
+  },
+  kitchen: {
+    fr: "Cuisine",
+    en: "Kitchen",
+    he: "מטבח"
+  },
+  clean: {
+    fr: "Ménage",
+    en: "Cleaning",
+    he: "ניקיון"
+  },
+  laundry: {
+    fr: "Linge",
+    en: "Laundry",
+    he: "כביסה"
+  },
+  tidy: {
+    fr: "Rangement",
+    en: "Tidying",
+    he: "סידור"
+  }
+};
+var CAT_ORDER = ["ritual", "self", "kitchen", "clean", "laundry", "tidy"];
+var LIB = CATALOG.map(function (c) {
+  return c.img;
+});
+var fromCatalog = function fromCatalog(c) {
+  return {
+    id: c.id,
+    img: c.img,
+    points: c.points,
+    freq: c.freq,
+    days: c.days || [],
+    moments: c.moments || ["any"],
+    assign: c.assign
+  };
+};
+
+/* le foyer démarre avec un petit socle, pas les 25 tâches */
+var STARTER = ["teeth", "bed", "shower", "toys", "dish", "cook", "vacuum", "trash"];
+var DEFAULT_TASKS = []; // le foyer part d'une liste vide et choisit lui-même
+
+var LABELS = Object.fromEntries(CATALOG.map(function (c) {
+  return [c.id, {
+    fr: c.fr,
+    en: c.en,
+    he: c.he
+  }];
+}));
+var uid = function uid() {
+  return Math.random().toString(36).slice(2, 9);
+};
+var startOfDay = function startOfDay() {
+  var x = new Date();
+  x.setHours(0, 0, 0, 0);
+  return x.getTime();
+};
+var weekStart = function weekStart() {
+  var x = new Date();
+  var d = (x.getDay() + 6) % 7;
+  x.setHours(0, 0, 0, 0);
+  x.setDate(x.getDate() - d);
+  return x.getTime();
+};
+var todayIdx = function todayIdx() {
+  return (new Date().getDay() + 6) % 7;
+};
+var STORE_KEY = "foyer:v5";
+var MEDIA_KEY = "foyer:media";
+var MAX_VIDEO = 3 * 1024 * 1024; // 3 Mo par vidéo
+var MAX_TOTAL = 40 * 1024 * 1024; // garde-fou global
+
+/* ---------- animation : la goutte tourne puis scintille ---------- */
+var CSS = `
+@keyframes dropSpin {
+  0%   { transform: rotate(0deg) scale(.5); opacity: 0; }
+  18%  { transform: rotate(120deg) scale(1.08); opacity: 1; }
+  70%  { transform: rotate(700deg) scale(1); opacity: 1; }
+  100% { transform: rotate(720deg) scale(1); opacity: 1; }
+}
+.drop-spin { animation: dropSpin 900ms cubic-bezier(.2,.8,.25,1) both; }
+@keyframes sparkle {
+  0%   { transform: scale(0) rotate(0deg); opacity: 0; }
+  55%  { transform: scale(1.25) rotate(90deg); opacity: 1; }
+  100% { transform: scale(.2) rotate(160deg); opacity: 0; }
+}
+.sparkle { animation: sparkle 780ms ease-out both; }
+@keyframes ringOut {
+  0%   { transform: scale(.4); opacity: .55; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.ring { animation: ringOut 900ms ease-out both; }
+@keyframes dropDance {
+  0%   { transform: translateY(0) rotate(0deg) scale(.45); opacity: 0; }
+  14%  { transform: translateY(0) rotate(-16deg) scale(1.06); opacity: 1; }
+  32%  { transform: translateY(-20px) rotate(14deg) scale(1); }
+  50%  { transform: translateY(0) rotate(-13deg); }
+  68%  { transform: translateY(-15px) rotate(11deg); }
+  85%  { transform: translateY(0) rotate(-6deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.drop-dance { animation: dropDance 1050ms cubic-bezier(.3,.7,.3,1) both; }
+@keyframes dropShine {
+  0%   { transform: scale(.4); opacity: 0; }
+  24%  { transform: scale(1.18); opacity: 1; }
+  46%  { transform: scale(.94); }
+  66%  { transform: scale(1.07); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.drop-shine { animation: dropShine 950ms ease-out both; }
+@keyframes pointsUp {
+  0%   { transform: translateY(16px) scale(.6); opacity: 0; }
+  28%  { transform: translateY(-6px) scale(1.12); opacity: 1; }
+  72%  { opacity: 1; }
+  100% { transform: translateY(-52px) scale(1); opacity: 0; }
+}
+.points-up { animation: pointsUp 1150ms ease-out both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.fade-in { animation: fadeIn 160ms ease-out both; }
+@keyframes zoomIn { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.zoom-in { animation: zoomIn 220ms cubic-bezier(.2,.9,.3,1.15) both; }
+@media (prefers-reduced-motion: reduce) {
+  .drop-spin, .sparkle, .ring, .drop-dance, .drop-shine, .points-up { animation-duration: 1ms !important; }
+}
+`;
+
+/* Silhouette calquée sur la mascotte : vraie goutte, pointe en haut
+   légèrement inclinée, bras aux hanches, deux jambes. */
+/* La mascotte est une vraie image, declinee en huit couleurs.
+   DROP_KEY fait le lien entre une couleur de la palette et sa goutte. */
+var DROP_KEY = {
+  "#00B2A9": "turquoise",
+  "#6C3FD4": "violet",
+  "#FF7A1A": "orange",
+  "#E8467C": "rose",
+  "#2F80ED": "bleu",
+  "#2FAF5A": "vert",
+  "#F2B705": "jaune",
+  "#64748B": "gris"
+};
+function Goutte(_ref) {
+  var _ref$color = _ref.color,
+    color = _ref$color === void 0 ? C.turquoise : _ref$color,
+    _ref$size = _ref.size,
+    size = _ref$size === void 0 ? 40 : _ref$size;
+  var key = DROP_KEY[color] || "turquoise";
+  return /*#__PURE__*/React.createElement("img", {
+    src: DROPS_IMG[key],
+    alt: "",
+    width: size,
+    height: size,
+    style: {
+      display: "block",
+      objectFit: "contain"
+    }
+  });
+}
+function Avatar(_ref2) {
+  var a = _ref2.a,
+    _ref2$size = _ref2.size,
+    size = _ref2$size === void 0 ? 38 : _ref2$size;
+  var s = {
+    width: size,
+    height: size
+  };
+  if (!a) return /*#__PURE__*/React.createElement("div", {
+    className: "rounded-full",
+    style: _objectSpread(_objectSpread({}, s), {}, {
+      background: C.grisF
+    })
+  });
+  if (a.type === "photo") return /*#__PURE__*/React.createElement("img", {
+    src: a.value,
+    alt: "",
+    className: "rounded-full object-cover",
+    style: s
+  });
+  if (a.type === "drop") return /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center rounded-full",
+    style: _objectSpread(_objectSpread({}, s), {}, {
+      background: C.gris
+    })
+  }, /*#__PURE__*/React.createElement(Goutte, {
+    color: a.value,
+    size: size * 0.62
+  }));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center rounded-full",
+    style: _objectSpread(_objectSpread({}, s), {}, {
+      background: C.gris,
+      fontSize: size * 0.58
+    })
+  }, a.value);
+}
+function App() {
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    ready = _useState2[0],
+    setReady = _useState2[1];
+  var _useState3 = useState("fr"),
+    _useState4 = _slicedToArray(_useState3, 2),
+    lang = _useState4[0],
+    setLang = _useState4[1];
+  var _useState5 = useState([]),
+    _useState6 = _slicedToArray(_useState5, 2),
+    members = _useState6[0],
+    setMembers = _useState6[1];
+  var _useState7 = useState(DEFAULT_TASKS),
+    _useState8 = _slicedToArray(_useState7, 2),
+    tasks = _useState8[0],
+    setTasks = _useState8[1];
+  var _useState9 = useState([]),
+    _useState0 = _slicedToArray(_useState9, 2),
+    log = _useState0[0],
+    setLog = _useState0[1];
+  var _useState1 = useState([]),
+    _useState10 = _slicedToArray(_useState1, 2),
+    rewards = _useState10[0],
+    setRewards = _useState10[1];
+  var _useState11 = useState(""),
+    _useState12 = _slicedToArray(_useState11, 2),
+    newRw = _useState12[0],
+    setNewRw = _useState12[1];
+  var _useState13 = useState(50),
+    _useState14 = _slicedToArray(_useState13, 2),
+    newRwCost = _useState14[0],
+    setNewRwCost = _useState14[1];
+  var _useState15 = useState("home"),
+    _useState16 = _slicedToArray(_useState15, 2),
+    tab = _useState16[0],
+    setTab = _useState16[1];
+  var _useState17 = useState(null),
+    _useState18 = _slicedToArray(_useState17, 2),
+    activeId = _useState18[0],
+    setActiveId = _useState18[1];
+  var _useState19 = useState(todayIdx()),
+    _useState20 = _slicedToArray(_useState19, 2),
+    planDay = _useState20[0],
+    setPlanDay = _useState20[1];
+  var _useState21 = useState("all"),
+    _useState22 = _slicedToArray(_useState21, 2),
+    planWho = _useState22[0],
+    setPlanWho = _useState22[1];
+  var _useState23 = useState("list"),
+    _useState24 = _slicedToArray(_useState23, 2),
+    taskView = _useState24[0],
+    setTaskView = _useState24[1];
+  var _useState25 = useState(null),
+    _useState26 = _slicedToArray(_useState25, 2),
+    openTask = _useState26[0],
+    setOpenTask = _useState26[1];
+  var _useState27 = useState(null),
+    _useState28 = _slicedToArray(_useState27, 2),
+    burst = _useState28[0],
+    setBurst = _useState28[1];
+  var _useState29 = useState(null),
+    _useState30 = _slicedToArray(_useState29, 2),
+    zoom = _useState30[0],
+    setZoom = _useState30[1];
+  var _useState31 = useState(0),
+    _useState32 = _slicedToArray(_useState31, 2),
+    zoomIdx = _useState32[0],
+    setZoomIdx = _useState32[1];
+  var _useState33 = useState(null),
+    _useState34 = _slicedToArray(_useState33, 2),
+    askWho = _useState34[0],
+    setAskWho = _useState34[1];
+  var _useState35 = useState(false),
+    _useState36 = _slicedToArray(_useState35, 2),
+    bonusOpen = _useState36[0],
+    setBonusOpen = _useState36[1];
+  var _useState37 = useState({}),
+    _useState38 = _slicedToArray(_useState37, 2),
+    media = _useState38[0],
+    setMedia = _useState38[1];
+  var mediaRef = useRef(null);
+  var _useState39 = useState(null),
+    _useState40 = _slicedToArray(_useState39, 2),
+    mediaFor = _useState40[0],
+    setMediaFor = _useState40[1];
+  var _useState41 = useState(null),
+    _useState42 = _slicedToArray(_useState41, 2),
+    swipe = _useState42[0],
+    setSwipe = _useState42[1];
+  var touchRef = useRef(null);
+  var _useState43 = useState(null),
+    _useState44 = _slicedToArray(_useState43, 2),
+    err = _useState44[0],
+    setErr = _useState44[1];
+  var _useState45 = useState(null),
+    _useState46 = _slicedToArray(_useState45, 2),
+    editing = _useState46[0],
+    setEditing = _useState46[1];
+  var _useState47 = useState(""),
+    _useState48 = _slicedToArray(_useState47, 2),
+    editVal = _useState48[0],
+    setEditVal = _useState48[1];
+  var _useState49 = useState(""),
+    _useState50 = _slicedToArray(_useState49, 2),
+    draftName = _useState50[0],
+    setDraftName = _useState50[1];
+  var _useState51 = useState("child"),
+    _useState52 = _slicedToArray(_useState51, 2),
+    draftKind = _useState52[0],
+    setDraftKind = _useState52[1];
+  var _useState53 = useState({
+      type: "drop",
+      value: DROPS[0]
+    }),
+    _useState54 = _slicedToArray(_useState53, 2),
+    draftAvatar = _useState54[0],
+    setDraftAvatar = _useState54[1];
+  var _useState55 = useState("drops"),
+    _useState56 = _slicedToArray(_useState55, 2),
+    avatarTab = _useState56[0],
+    setAvatarTab = _useState56[1];
+  var _useState57 = useState(""),
+    _useState58 = _slicedToArray(_useState57, 2),
+    newTaskName = _useState58[0],
+    setNewTaskName = _useState58[1];
+  var _useState59 = useState(false),
+    _useState60 = _slicedToArray(_useState59, 2),
+    addMenu = _useState60[0],
+    setAddMenu = _useState60[1];
+  var _useState61 = useState(false),
+    _useState62 = _slicedToArray(_useState61, 2),
+    libOpen = _useState62[0],
+    setLibOpen = _useState62[1];
+  var _useState63 = useState(0),
+    _useState64 = _slicedToArray(_useState63, 2),
+    step = _useState64[0],
+    setStep = _useState64[1];
+  var _useState65 = useState(null),
+    _useState66 = _slicedToArray(_useState65, 2),
+    openFold = _useState66[0],
+    setOpenFold = _useState66[1];
+  var fileRef = useRef(null);
+  var t = UI[lang];
+  var rtl = lang === "he";
+  var titre = {
+    fontFamily: "Nunito, Assistant, sans-serif"
+  };
+  useEffect(function () {
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Assistant:wght@400;600;700&display=swap";
+    document.head.appendChild(l);
+    return function () {
+      return document.head.removeChild(l);
+    };
+  }, []);
+  useEffect(function () {
+    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var raw, r, _d$tasks, _d$members, _d$members2, d, mraw, m;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.n) {
+          case 0:
+            try {
+              raw = localStorage.getItem(STORE_KEY);
+              r = raw ? {
+                value: raw
+              } : null;
+              if (r && r.value) {
+                d = JSON.parse(r.value);
+                setLang(d.lang || "fr");
+                setMembers(d.members || []);
+                setTasks((_d$tasks = d.tasks) !== null && _d$tasks !== void 0 && _d$tasks.length ? d.tasks : DEFAULT_TASKS);
+                setLog(d.log || []);
+                setRewards(d.rewards || []);
+                setActiveId(((_d$members = d.members) === null || _d$members === void 0 || (_d$members = _d$members[0]) === null || _d$members === void 0 ? void 0 : _d$members.id) || null);
+                setStep(d.step != null ? d.step : (_d$members2 = d.members) !== null && _d$members2 !== void 0 && _d$members2.length ? 3 : 0);
+              }
+            } catch (e) {}
+            /* les médias vivent dans leur propre entrée : ils sont lourds
+               et n'ont pas à être réécrits à chaque coche de tâche */
+            try {
+              mraw = localStorage.getItem(MEDIA_KEY);
+              m = mraw ? {
+                value: mraw
+              } : null;
+              if (m && m.value) setMedia(JSON.parse(m.value));
+            } catch (e) {}
+            setReady(true);
+          case 1:
+            return _context.a(2);
+        }
+      }, _callee);
+    }))();
+  }, []);
+  useEffect(function () {
+    if (!ready) return;
+    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.n) {
+          case 0:
+            try {
+              localStorage.setItem(STORE_KEY, JSON.stringify({
+                lang,
+                members,
+                tasks,
+                log,
+                rewards,
+                step
+              }));
+            } catch (e) {
+              setErr(t.errorSave);
+              setTimeout(function () {
+                return setErr(null);
+              }, 2500);
+            }
+          case 1:
+            return _context2.a(2);
+        }
+      }, _callee2);
+    }))();
+  }, [lang, members, tasks, log, rewards, step, ready]);
+  useEffect(function () {
+    if (!ready) return;
+    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.n) {
+          case 0:
+            try {
+              localStorage.setItem(MEDIA_KEY, JSON.stringify(media));
+            } catch (e) {
+              setErr(t.errorFull);
+              setTimeout(function () {
+                return setErr(null);
+              }, 3500);
+            }
+          case 1:
+            return _context3.a(2);
+        }
+      }, _callee3);
+    }))();
+  }, [media, ready]);
+  var ws = weekStart(),
+    ds = startOfDay();
+  var weekLog = useMemo(function () {
+    return log.filter(function (e) {
+      return e.ts >= ws;
+    });
+  }, [log, ws]);
+  var dayLog = useMemo(function () {
+    return log.filter(function (e) {
+      return e.ts >= ds;
+    });
+  }, [log, ds]);
+  var scores = useMemo(function () {
+    var m = {};
+    members.forEach(function (p) {
+      return m[p.id] = 0;
+    });
+    weekLog.forEach(function (e) {
+      if (m[e.memberId] != null) m[e.memberId] += e.points;
+    });
+    return m;
+  }, [weekLog, members]);
+  var active = members.find(function (p) {
+    return p.id === activeId;
+  }) || members[0];
+  var label = function label(task) {
+    return task.label || (LABELS[task.id] || LABELS[task.img] || {})[lang] || task.id;
+  };
+  var scopeLog = function scopeLog(task) {
+    return task.freq === "weekly" ? weekLog : dayLog;
+  };
+  /* une tâche peut revenir plusieurs fois dans la journée (matin ET soir) :
+     chaque moment se coche séparément, d'où le moment stocké dans l'entrée */
+  var momentsOf = function momentsOf(task) {
+    return task.moments && task.moments.length ? task.moments : ["any"];
+  };
+  var hit = function hit(e, task, mom) {
+    return e.taskId === task.id && (!mom || (e.moment || "any") === mom);
+  };
+  var doneBy = function doneBy(task, mid, mom) {
+    return scopeLog(task).some(function (e) {
+      return hit(e, task, mom) && e.memberId === mid;
+    });
+  };
+  /* assign vaut "house" (une fois suffit pour le foyer), "all" (chacun
+     la fait), ou une liste d'identifiants : chaque personne désignée
+     doit la faire de son côté */
+  var assignOf = function assignOf(task) {
+    return task.assign || "house";
+  };
+  var assignedIds = function assignedIds(task) {
+    var a = assignOf(task);
+    if (a === "all") return members.map(function (m) {
+      return m.id;
+    });
+    if (Array.isArray(a)) return a;
+    if (typeof a === "string" && a !== "house") return [a]; // ancien format
+    return null; // pour la maison
+  };
+  var isDone = function isDone(task, mom) {
+    var ids = assignedIds(task);
+    if (!ids) return scopeLog(task).some(function (e) {
+      return hit(e, task, mom);
+    }); // maison
+    return active && ids.includes(active.id) ? doneBy(task, active.id, mom) : false;
+  };
+  var doneCount = function doneCount(task, mom) {
+    return (assignedIds(task) || []).filter(function (id) {
+      return doneBy(task, id, mom);
+    }).length;
+  };
+  var assignTotal = function assignTotal(task) {
+    return (assignedIds(task) || []).length;
+  };
+  /* une tâche « pour la maison » n'est proposée qu'aux adultes :
+     un tout-petit ne doit voir que ce qui lui est attribué */
+  var visibleFor = function visibleFor(task, mid) {
+    var ids = assignedIds(task);
+    return !ids || ids.includes(mid);
+  };
+  var isHouse = function isHouse(task) {
+    return assignedIds(task) === null;
+  };
+  var assignLabel = function assignLabel(task) {
+    var a = assignOf(task);
+    if (a === "house") return t.forHouse;
+    if (a === "all") return t.forAll;
+    var ids = assignedIds(task) || [];
+    var noms = ids.map(function (id) {
+      var _members$find;
+      return (_members$find = members.find(function (m) {
+        return m.id === id;
+      })) === null || _members$find === void 0 ? void 0 : _members$find.name;
+    }).filter(Boolean);
+    return noms.length ? noms.join(" · ") : t.forHouse;
+  };
+
+  /* une récompense n'existe que si tout le foyer l'a validée */
+  var validRewards = rewards.filter(function (r) {
+    return members.length > 0 && members.every(function (m) {
+      return (r.ok || []).includes(m.id);
+    });
+  });
+  function claimReward(p, r) {
+    setLog(function (l) {
+      return [].concat(_toConsumableArray(l), [{
+        id: uid(),
+        taskId: "__reward__",
+        rewardLabel: r.label,
+        memberId: p.id,
+        points: -r.cost,
+        ts: Date.now(),
+        moment: "any"
+      }]);
+    });
+    setBurst({
+      id: uid(),
+      color: C.orange,
+      variant: "dance",
+      points: -r.cost
+    });
+    setTimeout(function () {
+      return setBurst(null);
+    }, 1300);
+  }
+  var _useState67 = useState(0),
+    _useState68 = _slicedToArray(_useState67, 2),
+    weekOff = _useState68[0],
+    setWeekOff = _useState68[1];
+  var dateOf = function dateOf(off, d) {
+    var x = new Date(weekStart());
+    x.setDate(x.getDate() + off * 7 + d);
+    return x;
+  };
+  var dayNum = function dayNum(off, d) {
+    return dateOf(off, d).getDate();
+  };
+  var weekRange = function weekRange(off) {
+    var a = dateOf(off, 0),
+      b = dateOf(off, 6);
+    var f = function f(x) {
+      return `${x.getDate()}/${x.getMonth() + 1}`;
+    };
+    return `${f(a)} – ${f(b)}`;
+  };
+
+  /* ce qui a vraiment été fait un jour donné, d'après l'historique */
+  var dayBounds = function dayBounds(off, d) {
+    var a = dateOf(off, d);
+    a.setHours(0, 0, 0, 0);
+    return [a.getTime(), a.getTime() + 86400000];
+  };
+  var doneOn = function doneOn(off, d) {
+    var _dayBounds = dayBounds(off, d),
+      _dayBounds2 = _slicedToArray(_dayBounds, 2),
+      a = _dayBounds2[0],
+      b = _dayBounds2[1];
+    return log.filter(function (e) {
+      return e.ts >= a && e.ts < b && e.taskId !== "__reward__" && (planWho === "all" || e.memberId === planWho);
+    });
+  };
+  var isPast = function isPast(off, d) {
+    return dayBounds(off, d)[0] <= Date.now();
+  };
+  var today = todayIdx();
+  /* freq "free" : la tâche existe dans la liste mais n'est prévue
+     aucun jour — on la fait quand on veut, depuis « J'ai fait autre chose » */
+  var forDay = function forDay(d) {
+    return tasks.filter(function (k) {
+      return k.freq === "daily" || k.freq === "days" && (k.days || []).includes(d);
+    });
+  };
+  var todayTasks = forDay(today).filter(function (k) {
+    return visibleFor(k, active === null || active === void 0 ? void 0 : active.id);
+  });
+  var mineToday = todayTasks.filter(function (k) {
+    return !isHouse(k);
+  });
+  /* la maison est commune : elle ne dépend pas de la personne choisie */
+  var houseToday = forDay(today).filter(isHouse);
+  var byMoment = function byMoment(m) {
+    return mineToday.filter(function (k) {
+      return momentsOf(k).includes(m);
+    });
+  };
+  var weeklyAll = tasks.filter(function (k) {
+    return k.freq === "weekly" && visibleFor(k, active === null || active === void 0 ? void 0 : active.id);
+  });
+  var weekly = weeklyAll.filter(function (k) {
+    return !isHouse(k);
+  });
+  var houseWeekly = tasks.filter(function (k) {
+    return k.freq === "weekly" && isHouse(k);
+  });
+
+  /* planning : vue de tout le foyer, ou d'une personne */
+  var planFilter = function planFilter(task) {
+    return planWho === "all" ? true : visibleFor(task, planWho);
+  };
+  var planFor = function planFor(d) {
+    return forDay(d).filter(planFilter);
+  };
+  var planWeekly = function planWeekly() {
+    return tasks.filter(function (k) {
+      return k.freq === "weekly" && planFilter(k);
+    });
+  };
+  /* une tâche peut porter des médias perso ; le premier sert de vignette */
+  var mediaOf = function mediaOf(task) {
+    return (task.media || []).map(function (id) {
+      return media[id];
+    }).filter(Boolean);
+  };
+  var src = function src(task) {
+    var m = mediaOf(task).find(function (x) {
+      return x.type === "image";
+    });
+    return m ? m.src : IMG[task.img] || IMG.custom;
+  };
+  var poster = function poster(task) {
+    var m = mediaOf(task)[0];
+    if (m && m.type === "image") return m.src;
+    return IMG[task.img] || IMG.custom;
+  };
+  function pickPhoto(_x) {
+    return _pickPhoto.apply(this, arguments);
+  }
+  function _pickPhoto() {
+    _pickPhoto = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(e) {
+      var _e$target$files;
+      var f, url, im, _t;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            f = (_e$target$files = e.target.files) === null || _e$target$files === void 0 ? void 0 : _e$target$files[0];
+            if (f) {
+              _context4.n = 1;
+              break;
+            }
+            return _context4.a(2);
+          case 1:
+            _context4.p = 1;
+            _context4.n = 2;
+            return new Promise(function (res, rej) {
+              var r = new FileReader();
+              r.onload = function () {
+                return res(r.result);
+              };
+              r.onerror = rej;
+              r.readAsDataURL(f);
+            });
+          case 2:
+            url = _context4.v;
+            im = new Image();
+            im.onload = function () {
+              var s = 96;
+              var cv = document.createElement("canvas");
+              cv.width = s;
+              cv.height = s;
+              var ctx = cv.getContext("2d");
+              var m = Math.min(im.width, im.height);
+              ctx.drawImage(im, (im.width - m) / 2, (im.height - m) / 2, m, m, 0, 0, s, s);
+              setDraftAvatar({
+                type: "photo",
+                value: cv.toDataURL("image/jpeg", 0.72)
+              });
+            };
+            im.src = url;
+            _context4.n = 4;
+            break;
+          case 3:
+            _context4.p = 3;
+            _t = _context4.v;
+            setErr(t.errorSave);
+          case 4:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[1, 3]]);
+    }));
+    return _pickPhoto.apply(this, arguments);
+  }
+  var readFile = function readFile(f) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () {
+        return res(r.result);
+      };
+      r.onerror = rej;
+      r.readAsDataURL(f);
+    });
+  };
+
+  /* photos redimensionnées à 720 px : largement assez pour le plein
+     écran, et vingt fois plus léger qu'une photo brute de téléphone */
+  var shrink = function shrink(dataUrl) {
+    return new Promise(function (res) {
+      var im = new Image();
+      im.onload = function () {
+        var max = 720;
+        var sc = Math.min(1, max / Math.max(im.width, im.height));
+        var cv = document.createElement("canvas");
+        cv.width = Math.round(im.width * sc);
+        cv.height = Math.round(im.height * sc);
+        cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+        res(cv.toDataURL("image/jpeg", 0.78));
+      };
+      im.onerror = function () {
+        return res(dataUrl);
+      };
+      im.src = dataUrl;
+    });
+  };
+  function addMedia(_x2) {
+    return _addMedia.apply(this, arguments);
+  }
+  function _addMedia() {
+    _addMedia = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(e) {
+      var files, taskId, added, _i, _files, _f, _src, id, raw, small, _id, next, weight, _t2;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
+          case 0:
+            files = Array.from(e.target.files || []);
+            taskId = mediaFor;
+            e.target.value = "";
+            if (!(!files.length || !taskId)) {
+              _context5.n = 1;
+              break;
+            }
+            return _context5.a(2);
+          case 1:
+            added = [];
+            _i = 0, _files = files;
+          case 2:
+            if (!(_i < _files.length)) {
+              _context5.n = 12;
+              break;
+            }
+            _f = _files[_i];
+            _context5.p = 3;
+            if (!_f.type.startsWith("video/")) {
+              _context5.n = 6;
+              break;
+            }
+            if (!(_f.size > MAX_VIDEO)) {
+              _context5.n = 4;
+              break;
+            }
+            setErr(t.videoTooBig);
+            setTimeout(function () {
+              return setErr(null);
+            }, 4000);
+            return _context5.a(3, 11);
+          case 4:
+            _context5.n = 5;
+            return readFile(_f);
+          case 5:
+            _src = _context5.v;
+            id = uid();
+            added.push([id, {
+              type: "video",
+              src: _src
+            }]);
+            _context5.n = 9;
+            break;
+          case 6:
+            if (!_f.type.startsWith("image/")) {
+              _context5.n = 9;
+              break;
+            }
+            _context5.n = 7;
+            return readFile(_f);
+          case 7:
+            raw = _context5.v;
+            _context5.n = 8;
+            return shrink(raw);
+          case 8:
+            small = _context5.v;
+            _id = uid();
+            added.push([_id, {
+              type: "image",
+              src: small
+            }]);
+          case 9:
+            _context5.n = 11;
+            break;
+          case 10:
+            _context5.p = 10;
+            _t2 = _context5.v;
+          case 11:
+            _i++;
+            _context5.n = 2;
+            break;
+          case 12:
+            if (added.length) {
+              _context5.n = 13;
+              break;
+            }
+            return _context5.a(2);
+          case 13:
+            next = _objectSpread({}, media);
+            added.forEach(function (_ref16) {
+              var _ref17 = _slicedToArray(_ref16, 2),
+                id = _ref17[0],
+                m = _ref17[1];
+              next[id] = m;
+            });
+            weight = JSON.stringify(next).length;
+            if (!(weight > MAX_TOTAL)) {
+              _context5.n = 14;
+              break;
+            }
+            setErr(t.errorFull);
+            setTimeout(function () {
+              return setErr(null);
+            }, 4000);
+            return _context5.a(2);
+          case 14:
+            setMedia(next);
+            setTasks(function (ts) {
+              return ts.map(function (x) {
+                return x.id === taskId ? _objectSpread(_objectSpread({}, x), {}, {
+                  media: [].concat(_toConsumableArray(x.media || []), _toConsumableArray(added.map(function (_ref18) {
+                    var _ref19 = _slicedToArray(_ref18, 1),
+                      id = _ref19[0];
+                    return id;
+                  })))
+                }) : x;
+              });
+            });
+          case 15:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[3, 10]]);
+    }));
+    return _addMedia.apply(this, arguments);
+  }
+  function removeMedia(taskId, id) {
+    setTasks(function (ts) {
+      return ts.map(function (x) {
+        return x.id === taskId ? _objectSpread(_objectSpread({}, x), {}, {
+          media: (x.media || []).filter(function (y) {
+            return y !== id;
+          })
+        }) : x;
+      });
+    });
+    setMedia(function (m) {
+      var n = _objectSpread({}, m);
+      delete n[id];
+      return n;
+    });
+  }
+  function addMember() {
+    var n = draftName.trim();
+    if (!n) return;
+    var p = {
+      id: uid(),
+      name: n,
+      avatar: draftAvatar,
+      kind: draftKind
+    };
+    setMembers(function (m) {
+      return [].concat(_toConsumableArray(m), [p]);
+    });
+    setActiveId(function (a) {
+      return a || p.id;
+    });
+    setDraftName("");
+    setDraftAvatar({
+      type: "drop",
+      value: DROPS[(members.length + 1) % DROPS.length]
+    });
+  }
+
+  /* décocher : on retire la dernière entrée correspondante */
+  function unlogTask(task) {
+    var mom = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    if (!active && members.length === 0) return;
+    var ids = assignedIds(task);
+    var cands = scopeLog(task).filter(function (e) {
+      return hit(e, task, mom) && (!ids || e.memberId === active.id);
+    }); // maison : n'importe qui
+    if (!cands.length) return;
+    var last = cands.reduce(function (a, b) {
+      return b.ts > a.ts ? b : a;
+    });
+    setLog(function (l) {
+      return l.filter(function (e) {
+        return e.id !== last.id;
+      });
+    });
+  }
+  function logTask(task) {
+    var mom = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var who = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var mid = who || (active === null || active === void 0 ? void 0 : active.id);
+    if (!mid) return;
+    var entry = {
+      id: uid(),
+      taskId: task.id,
+      memberId: mid,
+      points: task.points,
+      ts: Date.now(),
+      moment: mom || "any"
+    };
+    setLog(function (l) {
+      return [].concat(_toConsumableArray(l), [entry]);
+    });
+    var variants = ["spin", "dance", "shine"];
+    setBurst({
+      id: entry.id,
+      color: ACCENTS[tasks.findIndex(function (x) {
+        return x.id === task.id;
+      }) % 3],
+      variant: variants[Math.floor(Math.random() * variants.length)],
+      points: task.points
+    });
+    setTimeout(function () {
+      return setBurst(function (b) {
+        return (b === null || b === void 0 ? void 0 : b.id) === entry.id ? null : b;
+      });
+    }, 1300);
+  }
+  if (!ready) return /*#__PURE__*/React.createElement("div", {
+    className: "flex min-h-screen items-center justify-center",
+    style: {
+      background: C.gris,
+      color: C.encreDoux
+    }
+  }, UI.fr.loading);
+
+  /* en-tête de section repliable pour les réglages */
+  var Fold = function Fold(_ref6) {
+    var id = _ref6.id,
+      color = _ref6.color,
+      title = _ref6.title,
+      children = _ref6.children;
+    var open = openFold === id;
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setOpenFold(open ? null : id);
+      },
+      className: "flex w-full items-center gap-2 rounded-2xl px-3 py-3",
+      style: {
+        background: open ? color : C.blanc,
+        color: open ? "#fff" : C.encre
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "flex-1 text-start text-sm font-extrabold uppercase tracking-[0.1em]"
+    }, title), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-black"
+    }, open ? "▲" : "▼")), open && /*#__PURE__*/React.createElement("div", {
+      className: "mt-2"
+    }, children));
+  };
+  var Titre = function Titre(_ref7) {
+    var children = _ref7.children,
+      color = _ref7.color;
+    return /*#__PURE__*/React.createElement("p", {
+      className: "mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em]",
+      style: {
+        color: color || C.encreDoux
+      }
+    }, children);
+  };
+
+  /* étiquette blanche : image à gauche, libellé à côté */
+  var rowEl = function rowEl(task, i) {
+    var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "log";
+    var mom = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    var done = isDone(task, mom);
+    var col = ACCENTS[i % 3];
+    var dx = swipe && swipe.id === task.id ? swipe.dx : 0;
+    var armed = dx < -90;
+    return /*#__PURE__*/React.createElement("div", {
+      className: "relative overflow-hidden rounded-2xl",
+      style: {
+        background: C.orange
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "pointer-events-none absolute inset-y-0 end-0 flex items-center gap-2 pe-5",
+      style: {
+        color: "#fff"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-lg"
+    }, "🗑"), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-extrabold"
+    }, t.remove)), /*#__PURE__*/React.createElement("div", {
+      onTouchStart: function onTouchStart(e) {
+        /* on note le départ sans déclencher de rendu : sinon un simple
+           tap redessinerait l'étiquette et le clic serait perdu */
+        touchRef.current = {
+          id: task.id,
+          x0: e.touches[0].clientX,
+          y0: e.touches[0].clientY,
+          live: false
+        };
+      },
+      onTouchMove: function onTouchMove(e) {
+        var r = touchRef.current;
+        if (!r || r.id !== task.id) return;
+        var dxRaw = e.touches[0].clientX - r.x0;
+        var dyRaw = e.touches[0].clientY - r.y0;
+        /* on n'entre en mode glissement que si le geste est franchement
+           horizontal — sinon c'est un défilement, ou un simple tap */
+        if (!r.live) {
+          if (Math.abs(dxRaw) < 12 || Math.abs(dxRaw) < Math.abs(dyRaw)) return;
+          r.live = true;
+        }
+        setSwipe({
+          id: task.id,
+          dx: Math.max(-150, Math.min(0, rtl ? -dxRaw : dxRaw))
+        });
+      },
+      onTouchEnd: function onTouchEnd() {
+        var r = touchRef.current;
+        touchRef.current = null;
+        if (r && r.live && swipe && swipe.id === task.id && swipe.dx < -90) {
+          setTasks(function (ts) {
+            return ts.filter(function (x) {
+              return x.id !== task.id;
+            });
+          });
+          if (openTask === task.id) setOpenTask(null);
+        }
+        if (r && r.live) setSwipe(null);
+      },
+      className: "flex items-center gap-3 rounded-2xl p-2",
+      style: {
+        background: C.blanc,
+        transform: `translateX(${rtl ? -dx : dx}px)`,
+        transition: swipe && swipe.id === task.id ? "none" : "transform 200ms ease-out",
+        boxShadow: armed ? `0 0 0 2px ${C.orange}` : "none"
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        setZoomIdx(0);
+        setZoom(task);
+      },
+      className: "flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl transition active:scale-95",
+      style: {
+        background: C.gris
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: src(task),
+      alt: "",
+      className: "h-full w-full object-cover",
+      style: {
+        opacity: done && mode === "log" ? 0.4 : 1
+      }
+    })), editing === task.id ? /*#__PURE__*/React.createElement("input", {
+      autoFocus: true,
+      value: editVal,
+      onChange: function onChange(e) {
+        return setEditVal(e.target.value);
+      },
+      onBlur: function onBlur() {
+        var v = editVal.trim();
+        if (v) setTasks(function (ts) {
+          return ts.map(function (x) {
+            return x.id === task.id ? _objectSpread(_objectSpread({}, x), {}, {
+              label: v
+            }) : x;
+          });
+        });
+        setEditing(null);
+      },
+      className: "flex-1 rounded-xl px-3 py-2 text-sm font-bold outline-none",
+      style: {
+        background: C.gris
+      }
+    }) : /*#__PURE__*/React.createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "block text-[15px] font-bold leading-tight",
+      style: {
+        color: done && mode === "log" ? C.encreDoux : C.encre
+      }
+    }, label(task)), /*#__PURE__*/React.createElement("span", {
+      className: "text-[11px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, task.freq === "free" ? `${t.freqFree} · ${assignLabel(task)}` : assignLabel(task), assignTotal(task) > 1 && ` · ${doneCount(task, mom)}/${assignTotal(task)}`)), mode === "log" ? done ? /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return unlogTask(task, mom);
+      },
+      className: "rounded-full px-3 py-1.5 text-xs font-extrabold",
+      style: {
+        background: C.gris,
+        color: C.encreDoux
+      }
+    }, "✓") : /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return logTask(task, mom);
+      },
+      className: "rounded-full px-3.5 py-1.5 text-xs font-extrabold transition active:scale-95",
+      style: {
+        background: col,
+        color: "#fff"
+      }
+    }, "+", task.points) : /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setOpenTask(openTask === task.id ? null : task.id);
+      },
+      className: "flex h-9 w-9 items-center justify-center rounded-full text-sm font-extrabold",
+      style: {
+        background: openTask === task.id ? C.violet : C.gris,
+        color: openTask === task.id ? "#fff" : C.encreDoux
+      }
+    }, openTask === task.id ? "✕" : "✎")));
+  };
+
+  /* carte carrée : grande image, libellé dessous.
+     Faite, elle passe en gris clair avec un grand V. */
+  var cardEl = function cardEl(task, i, mom) {
+    var done = isDone(task, mom);
+    var col = ACCENTS[i % 3];
+    var maison = isHouse(task);
+    /* qui a fait une tâche de la maison ? on le lit dans l'historique */
+    var par = maison && done ? members.find(function (m) {
+      return m.id === scopeLog(task).filter(function (e) {
+        return hit(e, task, mom);
+      }).reduce(function (a, b) {
+        return b.ts > a.ts ? b : a;
+      }).memberId;
+    }) : null;
+    return /*#__PURE__*/React.createElement("div", {
+      key: task.id,
+      className: "w-[46%] shrink-0 snap-start pt-1"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        var _members$;
+        if (done) {
+          unlogTask(task, mom);
+          return;
+        }
+        if (maison && members.length > 1) {
+          setAskWho({
+            task,
+            mom
+          });
+          return;
+        }
+        logTask(task, mom, maison ? (_members$ = members[0]) === null || _members$ === void 0 ? void 0 : _members$.id : null);
+      },
+      className: "relative block w-full overflow-hidden rounded-3xl transition active:scale-95",
+      style: {
+        background: C.blanc,
+        border: `3px solid ${done ? C.encreDoux : col}`
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: src(task),
+      alt: "",
+      className: "block aspect-square w-full object-cover",
+      style: {
+        filter: done ? "grayscale(1) contrast(.85)" : "none",
+        opacity: done ? 0.62 : 1
+      }
+    }), done && /*#__PURE__*/React.createElement("span", {
+      className: "pointer-events-none absolute inset-0 flex items-center justify-center"
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: "#fff",
+        fontSize: "62px",
+        fontWeight: 900,
+        lineHeight: 1,
+        textShadow: `0 3px 10px rgba(16,27,45,.55)`
+      }
+    }, "✓")), !done && /*#__PURE__*/React.createElement("span", {
+      className: "absolute end-2 top-2 rounded-full px-2.5 py-1 text-[11px] font-extrabold",
+      style: {
+        background: col,
+        color: "#fff"
+      }
+    }, "+", task.points)), /*#__PURE__*/React.createElement("p", {
+      className: "mt-1.5 px-1 text-center text-[13px] font-extrabold leading-tight",
+      style: {
+        color: done ? C.encreDoux : C.encre
+      }
+    }, label(task)), par && /*#__PURE__*/React.createElement("div", {
+      className: "mt-1 flex items-center justify-center gap-1.5"
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: par.avatar,
+      size: 20
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-[11px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, par.name)), assignTotal(task) > 1 && /*#__PURE__*/React.createElement("p", {
+      className: "text-center text-[10px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, doneCount(task, mom), "/", assignTotal(task)));
+  };
+  var Section = function Section(_ref8) {
+    var title = _ref8.title,
+      color = _ref8.color,
+      items = _ref8.items,
+      _ref8$off = _ref8.off,
+      off = _ref8$off === void 0 ? 0 : _ref8$off,
+      _ref8$mom = _ref8.mom,
+      mom = _ref8$mom === void 0 ? null : _ref8$mom;
+    return items.length === 0 ? null : /*#__PURE__*/React.createElement("section", {
+      className: "mt-5"
+    }, /*#__PURE__*/React.createElement(Titre, {
+      color: color
+    }, title), /*#__PURE__*/React.createElement("div", {
+      className: "-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 pt-1"
+    }, items.map(function (task, i) {
+      return cardEl(task, i + off, mom);
+    })));
+  };
+
+  /* panneau d'édition : tout se règle ici, y compris la récurrence
+     et la personne à qui la tâche revient */
+  var editorEl = function editorEl(task) {
+    var up = function up(patch) {
+      return setTasks(function (ts) {
+        return ts.map(function (x) {
+          return x.id === task.id ? _objectSpread(_objectSpread({}, x), patch) : x;
+        });
+      });
+    };
+    var Chip = function Chip(_ref9) {
+      var on = _ref9.on,
+        color = _ref9.color,
+        onClick = _ref9.onClick,
+        children = _ref9.children,
+        _ref9$flex = _ref9.flex,
+        flex = _ref9$flex === void 0 ? true : _ref9$flex;
+      return /*#__PURE__*/React.createElement("button", {
+        onClick: onClick,
+        className: `${flex ? "flex-1 " : ""}rounded-xl px-2 py-1.5 text-[11px] font-extrabold`,
+        style: {
+          background: on ? color : C.gris,
+          color: on ? "#fff" : C.encreDoux
+        }
+      }, children);
+    };
+    return /*#__PURE__*/React.createElement("div", {
+      className: "rounded-2xl p-3",
+      style: {
+        background: C.blanc,
+        boxShadow: `inset 0 0 0 2px ${C.grisF}`
+      }
+    }, /*#__PURE__*/React.createElement("input", {
+      value: label(task),
+      onChange: function onChange(e) {
+        return up({
+          label: e.target.value
+        });
+      },
+      className: "w-full rounded-xl px-3 py-2.5 text-sm font-bold outline-none",
+      style: {
+        background: C.gris
+      }
+    }), !CATALOG.some(function (c) {
+      return c.id === task.id;
+    }) && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+      className: "mb-1.5 mt-3 text-[10px] font-extrabold uppercase tracking-widest",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.image), /*#__PURE__*/React.createElement("div", {
+      className: "grid grid-cols-4 gap-1.5"
+    }, LIB.map(function (k) {
+      return /*#__PURE__*/React.createElement("button", {
+        key: k,
+        onClick: function onClick() {
+          return up({
+            img: k
+          });
+        },
+        className: "overflow-hidden rounded-lg",
+        style: {
+          background: C.gris,
+          outline: task.img === k ? `3px solid ${C.turquoise}` : "none"
+        }
+      }, /*#__PURE__*/React.createElement("img", {
+        src: IMG[k],
+        alt: "",
+        className: "block w-full"
+      }));
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "mb-1.5 mt-3 flex items-center justify-between"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] font-extrabold uppercase tracking-widest",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.myMedia), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        setMediaFor(task.id);
+        setTimeout(function () {
+          var _mediaRef$current;
+          return (_mediaRef$current = mediaRef.current) === null || _mediaRef$current === void 0 ? void 0 : _mediaRef$current.click();
+        }, 0);
+      },
+      className: "rounded-full px-3 py-1 text-[11px] font-extrabold",
+      style: {
+        background: C.violet,
+        color: "#fff"
+      }
+    }, "+ ", t.addMedia)), mediaOf(task).length === 0 ? /*#__PURE__*/React.createElement("p", {
+      className: "text-[11px]",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.mediaHint) : /*#__PURE__*/React.createElement("div", {
+      className: "flex gap-2 overflow-x-auto pb-1"
+    }, (task.media || []).map(function (id) {
+      var m = media[id];
+      if (!m) return null;
+      return /*#__PURE__*/React.createElement("div", {
+        key: id,
+        className: "relative shrink-0"
+      }, m.type === "video" ? /*#__PURE__*/React.createElement("video", {
+        src: m.src,
+        className: "h-16 w-16 rounded-lg object-cover",
+        style: {
+          background: C.gris
+        },
+        muted: true,
+        playsInline: true
+      }) : /*#__PURE__*/React.createElement("img", {
+        src: m.src,
+        alt: "",
+        className: "h-16 w-16 rounded-lg object-cover",
+        style: {
+          background: C.gris
+        }
+      }), m.type === "video" && /*#__PURE__*/React.createElement("span", {
+        className: "pointer-events-none absolute bottom-0.5 start-1 text-[10px]"
+      }, "▶"), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          return removeMedia(task.id, id);
+        },
+        className: "absolute -end-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-xs font-black",
+        style: {
+          background: C.orange,
+          color: "#fff"
+        }
+      }, "×"));
+    })), /*#__PURE__*/React.createElement("p", {
+      className: "mb-1.5 mt-3 text-[10px] font-extrabold uppercase tracking-widest",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.assign), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap gap-1.5"
+    }, /*#__PURE__*/React.createElement(Chip, {
+      flex: false,
+      on: assignOf(task) === "house",
+      color: C.turquoise,
+      onClick: function onClick() {
+        return up({
+          assign: "house"
+        });
+      }
+    }, t.forHouse), /*#__PURE__*/React.createElement(Chip, {
+      flex: false,
+      on: assignOf(task) === "all",
+      color: C.violet,
+      onClick: function onClick() {
+        return up({
+          assign: "all"
+        });
+      }
+    }, t.forAll)), /*#__PURE__*/React.createElement("p", {
+      className: "mt-1.5 text-[10px] leading-snug",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.kidHint), /*#__PURE__*/React.createElement("p", {
+      className: "mt-2 mb-1.5 text-[10px] font-extrabold uppercase tracking-widest",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.orPick), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap gap-1.5"
+    }, members.map(function (m, i) {
+      var a = assignOf(task);
+      var cur = Array.isArray(a) ? a : typeof a === "string" && a !== "house" && a !== "all" ? [a] : [];
+      var on = cur.includes(m.id);
+      return /*#__PURE__*/React.createElement(Chip, {
+        key: m.id,
+        flex: false,
+        on: on,
+        color: ACCENTS[i % 3],
+        onClick: function onClick() {
+          var next = on ? cur.filter(function (x) {
+            return x !== m.id;
+          }) : [].concat(_toConsumableArray(cur), [m.id]);
+          up({
+            assign: next.length ? next : "house"
+          });
+        }
+      }, m.name);
+    })), /*#__PURE__*/React.createElement("p", {
+      className: "mb-1.5 mt-3 text-[10px] font-extrabold uppercase tracking-widest",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.recurrence), /*#__PURE__*/React.createElement("div", {
+      className: "flex gap-1.5"
+    }, [["daily", t.freqDaily], ["weekly", t.freqWeekly], ["days", t.freqDays]].map(function (_ref0) {
+      var _ref1 = _slicedToArray(_ref0, 2),
+        k = _ref1[0],
+        lb = _ref1[1];
+      return /*#__PURE__*/React.createElement(Chip, {
+        key: k,
+        on: task.freq === k,
+        color: C.violet,
+        onClick: function onClick() {
+          return up({
+            freq: k
+          });
+        }
+      }, lb);
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "mt-1.5"
+    }, /*#__PURE__*/React.createElement(Chip, {
+      on: task.freq === "free",
+      color: C.encreDoux,
+      onClick: function onClick() {
+        return up({
+          freq: "free"
+        });
+      }
+    }, t.freqFree)), /*#__PURE__*/React.createElement("p", {
+      className: "mt-1 text-[10px] leading-snug",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.freeHint), task.freq === "days" && /*#__PURE__*/React.createElement("div", {
+      className: "mt-1.5 flex gap-1"
+    }, t.days.map(function (d, i) {
+      var on = (task.days || []).includes(i);
+      return /*#__PURE__*/React.createElement("button", {
+        key: i,
+        onClick: function onClick() {
+          return up({
+            days: on ? task.days.filter(function (y) {
+              return y !== i;
+            }) : [].concat(_toConsumableArray(task.days || []), [i])
+          });
+        },
+        className: "h-9 flex-1 rounded-lg text-xs font-black",
+        style: {
+          background: on ? C.orange : C.gris,
+          color: on ? "#fff" : C.encreDoux
+        }
+      }, d);
+    })), task.freq !== "weekly" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+      className: "mb-1.5 mt-3 text-[10px] font-extrabold uppercase tracking-widest",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.moment), /*#__PURE__*/React.createElement("div", {
+      className: "flex gap-1.5"
+    }, [["morning", t.mMorning], ["any", t.mAny], ["evening", t.mEvening]].map(function (_ref10) {
+      var _ref11 = _slicedToArray(_ref10, 2),
+        k = _ref11[0],
+        lb = _ref11[1];
+      var cur = momentsOf(task);
+      var on = cur.includes(k);
+      return /*#__PURE__*/React.createElement(Chip, {
+        key: k,
+        on: on,
+        color: C.turquoise,
+        onClick: function onClick() {
+          var next = on ? cur.filter(function (x) {
+            return x !== k;
+          }) : [].concat(_toConsumableArray(cur), [k]);
+          up({
+            moments: next.length ? next : ["any"]
+          });
+        }
+      }, lb);
+    })), /*#__PURE__*/React.createElement("p", {
+      className: "mt-1 text-[10px]",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.momentHint)), /*#__PURE__*/React.createElement("div", {
+      className: "mt-3 flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] font-extrabold uppercase tracking-widest",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.points), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-1 gap-1"
+    }, [5, 10, 15, 20].map(function (v) {
+      return /*#__PURE__*/React.createElement("button", {
+        key: v,
+        onClick: function onClick() {
+          return up({
+            points: v
+          });
+        },
+        className: "flex-1 rounded-lg py-1.5 text-xs font-extrabold",
+        style: {
+          background: task.points === v ? C.encre : C.gris,
+          color: task.points === v ? "#fff" : C.encreDoux
+        }
+      }, v);
+    })), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        setTasks(function (ts) {
+          return ts.filter(function (x) {
+            return x.id !== task.id;
+          });
+        });
+        setOpenTask(null);
+      },
+      className: "rounded-lg px-3 py-1.5 text-xs font-extrabold",
+      style: {
+        background: C.orange,
+        color: "#fff"
+      }
+    }, t.remove)), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setOpenTask(null);
+      },
+      className: "mt-3 w-full rounded-2xl py-3 text-sm font-extrabold",
+      style: {
+        background: C.turquoise,
+        color: "#fff"
+      }
+    }, t.close));
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    dir: rtl ? "rtl" : "ltr",
+    className: "min-h-screen w-full",
+    style: {
+      background: C.gris,
+      color: C.encre,
+      fontFamily: "Assistant, system-ui, sans-serif"
+    }
+  }, /*#__PURE__*/React.createElement("style", null, CSS), /*#__PURE__*/React.createElement("div", {
+    className: "mx-auto w-full max-w-md px-4 pb-28 pt-5"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "flex items-center justify-between gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Goutte, {
+    color: C.turquoise,
+    size: 26
+  }), /*#__PURE__*/React.createElement("h1", {
+    className: "text-xl font-black tracking-tight",
+    style: titre
+  }, t.app)), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1"
+  }, LANGS.map(function (l) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: l.id,
+      onClick: function onClick() {
+        return setLang(l.id);
+      },
+      className: "rounded-full px-2.5 py-1 text-xs font-extrabold",
+      style: {
+        background: lang === l.id ? C.turquoise : C.blanc,
+        color: lang === l.id ? "#fff" : C.encreDoux
+      }
+    }, l.label);
+  }))), step === 0 ?
+  /*#__PURE__*/
+  /* première ouverture : une invitation, pas un formulaire */
+  React.createElement("section", {
+    className: "mt-10 flex flex-col items-center text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-5 flex items-end gap-1"
+  }, /*#__PURE__*/React.createElement(Goutte, {
+    color: C.turquoise,
+    size: 64
+  }), /*#__PURE__*/React.createElement(Goutte, {
+    color: C.violet,
+    size: 52
+  }), /*#__PURE__*/React.createElement(Goutte, {
+    color: C.orange,
+    size: 44
+  })), /*#__PURE__*/React.createElement("h2", {
+    className: "text-2xl font-black leading-tight",
+    style: titre
+  }, t.welcomeTitle), /*#__PURE__*/React.createElement("p", {
+    className: "mt-2 max-w-xs text-sm",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.welcomeHint), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setStep(1);
+    },
+    className: "mt-7 w-full rounded-2xl py-4 text-base font-extrabold transition active:scale-[.98]",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, t.begin)) : step === 1 ?
+  /*#__PURE__*/
+  /* étape 1 sur 2 : le foyer */
+  React.createElement("section", {
+    className: "mt-6"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-extrabold uppercase tracking-[0.14em]",
+    style: {
+      color: C.turquoise
+    }
+  }, t.stepOf.replace("{n}", "1")), /*#__PURE__*/React.createElement("h2", {
+    className: "mt-1 text-xl font-black",
+    style: titre
+  }, t.setupTitle), /*#__PURE__*/React.createElement("p", {
+    className: "mt-1 text-sm",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.setupHint), members.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 flex flex-wrap gap-2"
+  }, members.map(function (p) {
+    return /*#__PURE__*/React.createElement("span", {
+      key: p.id,
+      className: "flex items-center gap-2 rounded-full py-1.5 pe-3 ps-1.5",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: p.avatar,
+      size: 26
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-sm font-extrabold"
+    }, p.name));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 rounded-3xl p-4",
+    style: {
+      background: C.blanc
+    }
+  }, /*#__PURE__*/React.createElement(AvatarPicker, null), /*#__PURE__*/React.createElement("input", {
+    value: draftName,
+    onChange: function onChange(e) {
+      return setDraftName(e.target.value);
+    },
+    placeholder: t.name,
+    className: "mt-3 w-full rounded-2xl px-4 py-3 outline-none",
+    style: {
+      background: C.gris
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 flex gap-2"
+  }, ["child", "adult"].map(function (k) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: k,
+      onClick: function onClick() {
+        return setDraftKind(k);
+      },
+      className: "flex-1 rounded-2xl py-2.5 text-sm font-extrabold",
+      style: {
+        background: draftKind === k ? C.encre : C.gris,
+        color: draftKind === k ? "#fff" : C.encreDoux
+      }
+    }, k === "child" ? t.child : t.adult);
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: addMember,
+    className: "mt-3 w-full rounded-2xl py-3 font-extrabold",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, "+ ", t.add)), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3 rounded-2xl px-4 py-3 text-[12px] font-bold leading-snug",
+    style: {
+      background: C.blanc,
+      color: C.encreDoux
+    }
+  }, "💡 ", t.laterMembers), members.length > 0 && /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setStep(2);
+    },
+    className: "mt-4 w-full rounded-2xl py-4 text-base font-extrabold",
+    style: {
+      background: C.violet,
+      color: "#fff"
+    }
+  }, t.next, " →")) : step === 2 ?
+  /*#__PURE__*/
+  /* étape 2 sur 2 : les tâches */
+  React.createElement("section", {
+    className: "mt-6"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-extrabold uppercase tracking-[0.14em]",
+    style: {
+      color: C.violet
+    }
+  }, t.stepOf.replace("{n}", "2")), /*#__PURE__*/React.createElement("h2", {
+    className: "mt-1 text-xl font-black",
+    style: titre
+  }, t.setupTasks), /*#__PURE__*/React.createElement("p", {
+    className: "mt-1 text-sm",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.setupTasksHint), tasks.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 flex flex-col gap-2"
+  }, tasks.map(function (task, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: task.id,
+      className: "flex flex-col gap-2"
+    }, rowEl(task, i, "edit"), openTask === task.id && editorEl(task));
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setAddMenu(true);
+    },
+    className: "mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-4",
+    style: {
+      background: C.blanc,
+      border: `2.5px dashed ${C.violet}`,
+      color: C.violet
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xl font-black"
+  }, "+"), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-extrabold"
+  }, t.addTask)), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3 rounded-2xl px-4 py-3 text-[12px] font-bold leading-snug",
+    style: {
+      background: C.blanc,
+      color: C.encreDoux
+    }
+  }, "💡 ", t.laterTasks), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      setStep(3);
+      setTab("home");
+    },
+    className: "mt-4 w-full rounded-2xl py-4 text-base font-extrabold",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, tasks.length > 0 ? t.finish : t.skip)) : /*#__PURE__*/React.createElement(React.Fragment, null, tab === "home" && members.length === 1 && /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      setTab("settings");
+      setOpenFold("people");
+    },
+    className: "mt-4 flex w-full items-center gap-3 rounded-2xl p-3 text-start",
+    style: {
+      background: C.blanc,
+      border: `2px dashed ${C.turquoise}`
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "flex h-9 w-9 items-center justify-center rounded-full text-lg font-black",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, "+"), /*#__PURE__*/React.createElement("span", {
+    className: "flex-1 text-[13px] font-extrabold",
+    style: {
+      color: C.encre
+    }
+  }, t.addMore)), (tab === "home" || tab === "tasks" && taskView === "list") && /*#__PURE__*/React.createElement("div", {
+    className: "mt-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "mb-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em]",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.whoChecks), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2 overflow-x-auto pb-1"
+  }, members.map(function (p, i) {
+    var on = p.id === (active === null || active === void 0 ? void 0 : active.id);
+    return /*#__PURE__*/React.createElement("button", {
+      key: p.id,
+      onClick: function onClick() {
+        return setActiveId(p.id);
+      },
+      className: "flex shrink-0 items-center gap-2 rounded-full py-1.5 pe-4 ps-1.5 transition",
+      style: {
+        background: on ? ACCENTS[i % 3] : C.blanc,
+        color: on ? "#fff" : C.encre
+      }
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: p.avatar,
+      size: 30
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-sm font-extrabold"
+    }, p.name));
+  }))), tab === "home" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
+    className: "mt-5"
+  }, active && function () {
+    var idx = members.findIndex(function (m) {
+      return m.id === active.id;
+    });
+    var v = scores[active.id] || 0;
+    var col = ACCENTS[(idx < 0 ? 0 : idx) % 3];
+    var goal = validRewards.filter(function (r) {
+      return r.cost > v;
+    }).sort(function (a, b) {
+      return a.cost - b.cost;
+    })[0];
+    var reachable = validRewards.filter(function (r) {
+      return r.cost <= v;
+    }).sort(function (a, b) {
+      return b.cost - a.cost;
+    })[0];
+    var max = goal ? goal.cost : Math.max(50, v);
+    return /*#__PURE__*/React.createElement("div", {
+      className: "rounded-3xl p-4",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-3"
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: active.avatar,
+      size: 46
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-lg font-black leading-tight",
+      style: titre
+    }, active.name), /*#__PURE__*/React.createElement("p", {
+      className: "text-[11px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.scores)), /*#__PURE__*/React.createElement("span", {
+      className: "rounded-full px-3.5 py-2 text-base font-black",
+      style: {
+        background: col,
+        color: "#fff"
+      }
+    }, v)), /*#__PURE__*/React.createElement("div", {
+      className: "mt-3 h-3 w-full overflow-hidden rounded-full",
+      style: {
+        background: C.gris
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "h-full rounded-full transition-all",
+      style: {
+        width: `${Math.min(100, v / max * 100)}%`,
+        background: col
+      }
+    })), reachable ? /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return claimReward(active, reachable);
+      },
+      className: "mt-3 w-full rounded-2xl py-2.5 text-sm font-extrabold transition active:scale-[.98]",
+      style: {
+        background: col,
+        color: "#fff"
+      }
+    }, "🎁 ", reachable.label, " · ", t.rwClaim) : goal ? /*#__PURE__*/React.createElement("p", {
+      className: "mt-2 text-[12px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, t.rwNext, " : ", goal.label, " · ", goal.cost - v, " ", t.points) : null);
+  }()), /*#__PURE__*/React.createElement(Section, {
+    title: t.morning,
+    color: C.turquoise,
+    items: byMoment("morning"),
+    mom: "morning"
+  }), /*#__PURE__*/React.createElement(Section, {
+    title: t.anyTime,
+    color: C.encreDoux,
+    items: byMoment("any"),
+    off: 1,
+    mom: "any"
+  }), /*#__PURE__*/React.createElement(Section, {
+    title: t.evening,
+    color: C.violet,
+    items: byMoment("evening"),
+    off: 2,
+    mom: "evening"
+  }), /*#__PURE__*/React.createElement(Section, {
+    title: t.weekTasks,
+    color: C.orange,
+    items: weekly,
+    off: 1
+  }), /*#__PURE__*/React.createElement(Section, {
+    title: t.houseTasks,
+    color: C.turquoise,
+    items: houseToday,
+    off: 2,
+    mom: "any"
+  }), /*#__PURE__*/React.createElement(Section, {
+    title: t.houseWeek,
+    color: C.orange,
+    items: houseWeekly,
+    off: 1
+  }), active && tasks.length > 0 && /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setBonusOpen(true);
+    },
+    className: "mt-6 flex w-full items-center justify-center gap-2 rounded-2xl py-4 transition active:scale-[.99]",
+    style: {
+      background: C.blanc,
+      border: `2.5px dashed ${C.violet}`,
+      color: C.violet
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-lg"
+  }, "⭐"), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-extrabold"
+  }, t.bonusBtn)), tasks.length === 0 && /*#__PURE__*/React.createElement("section", {
+    className: "mt-8 flex flex-col items-center text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-4 opacity-40"
+  }, /*#__PURE__*/React.createElement(Goutte, {
+    color: C.encreDoux,
+    size: 56
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-bold",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.noTasksYet), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      setTab("tasks");
+      setTaskView("list");
+      setLibOpen(true);
+    },
+    className: "mt-4 w-full rounded-2xl py-3.5 text-sm font-extrabold",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, "+ ", t.goAddTasks)), tasks.length > 0 && todayTasks.length === 0 && weekly.length === 0 && /*#__PURE__*/React.createElement("section", {
+    className: "mt-8 flex flex-col items-center text-center"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-bold",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.noDay), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      setTab("tasks");
+      setTaskView("week");
+    },
+    className: "mt-3 w-full rounded-2xl py-3 text-sm font-extrabold",
+    style: {
+      background: C.violet,
+      color: "#fff"
+    }
+  }, t.plan)), todayTasks.length > 0 && todayTasks.every(isDone) && /*#__PURE__*/React.createElement("div", {
+    className: "mt-5 rounded-3xl p-5 text-center",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-lg font-black",
+    style: titre
+  }, t.allDone))), tab === "tasks" && /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 flex gap-2 rounded-2xl p-1",
+    style: {
+      background: C.blanc
+    }
+  }, [["list", t.tasks], ["week", t.plan]].map(function (_ref12) {
+    var _ref13 = _slicedToArray(_ref12, 2),
+      k = _ref13[0],
+      lb = _ref13[1];
+    return /*#__PURE__*/React.createElement("button", {
+      key: k,
+      onClick: function onClick() {
+        return setTaskView(k);
+      },
+      className: "flex-1 rounded-xl py-2 text-sm font-extrabold transition",
+      style: {
+        background: taskView === k ? C.turquoise : "transparent",
+        color: taskView === k ? "#fff" : C.encreDoux
+      }
+    }, lb);
+  })), tab === "tasks" && taskView === "list" && /*#__PURE__*/React.createElement("section", {
+    className: "mt-5"
+  }, tasks.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "rounded-3xl p-8 text-center",
+    style: {
+      background: C.blanc
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mx-auto mb-3 w-fit opacity-40"
+  }, /*#__PURE__*/React.createElement(Goutte, {
+    color: C.encreDoux,
+    size: 54
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-bold",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.emptyTasks)) : /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2"
+  }, tasks.map(function (task, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: task.id,
+      className: "flex flex-col gap-2"
+    }, rowEl(task, i, "edit"), openTask === task.id && editorEl(task));
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setAddMenu(true);
+    },
+    className: "mt-3 flex w-full items-center justify-center gap-2 rounded-2xl py-4 transition active:scale-[.99]",
+    style: {
+      background: C.blanc,
+      border: `2.5px dashed ${C.turquoise}`,
+      color: C.turquoise
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xl font-black"
+  }, "+"), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-extrabold"
+  }, t.addTask))), tab === "tasks" && taskView === "week" && /*#__PURE__*/React.createElement("section", {
+    className: "mt-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-4 flex gap-2 overflow-x-auto pb-1"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setPlanWho("all");
+    },
+    className: "shrink-0 rounded-full px-4 py-2 text-sm font-extrabold",
+    style: {
+      background: planWho === "all" ? C.violet : C.blanc,
+      color: planWho === "all" ? "#fff" : C.encre
+    }
+  }, t.everyone), members.map(function (p, i) {
+    var on = planWho === p.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: p.id,
+      onClick: function onClick() {
+        return setPlanWho(p.id);
+      },
+      className: "flex shrink-0 items-center gap-2 rounded-full py-1.5 pe-4 ps-1.5",
+      style: {
+        background: on ? ACCENTS[i % 3] : C.blanc,
+        color: on ? "#fff" : C.encre
+      }
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: p.avatar,
+      size: 28
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-sm font-extrabold"
+    }, p.name));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2 flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setWeekOff(function (w) {
+        return w - 1;
+      });
+    },
+    className: "flex h-9 w-9 items-center justify-center rounded-full text-base font-black",
+    style: {
+      background: C.blanc,
+      color: C.violet
+    }
+  }, "‹"), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 text-center"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-black",
+    style: titre
+  }, weekRange(weekOff)), weekOff !== 0 && /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setWeekOff(0);
+    },
+    className: "mt-0.5 text-[11px] font-extrabold underline",
+    style: {
+      color: C.violet
+    }
+  }, t.thisWeekBtn)), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setWeekOff(function (w) {
+        return w + 1;
+      });
+    },
+    className: "flex h-9 w-9 items-center justify-center rounded-full text-base font-black",
+    style: {
+      background: C.blanc,
+      color: C.violet
+    }
+  }, "›")), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1.5"
+  }, t.days.map(function (d, i) {
+    var on = planDay === i;
+    var isToday = weekOff === 0 && i === today;
+    return /*#__PURE__*/React.createElement("button", {
+      key: i,
+      onClick: function onClick() {
+        return setPlanDay(i);
+      },
+      className: "flex flex-1 flex-col items-center gap-0.5 rounded-2xl py-2",
+      style: {
+        background: on ? C.violet : C.blanc,
+        color: on ? "#fff" : C.encre,
+        outline: isToday && !on ? `2px solid ${C.turquoise}` : "none"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-black"
+    }, d), /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] font-bold",
+      style: {
+        color: on ? "rgba(255,255,255,.8)" : C.encreDoux
+      }
+    }, dayNum(weekOff, i)), /*#__PURE__*/React.createElement("span", {
+      className: "rounded-full px-1.5 text-[10px] font-extrabold",
+      style: {
+        background: on ? "rgba(255,255,255,.25)" : C.gris,
+        color: on ? "#fff" : C.encreDoux
+      }
+    }, isPast(weekOff, i) ? `${doneOn(weekOff, i).length}/${planFor(i).length}` : planFor(i).length));
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "mt-4 text-base font-black",
+    style: titre
+  }, t.dayFull[planDay], " ", dayNum(weekOff, planDay)), /*#__PURE__*/React.createElement("p", {
+    className: "mb-1 mt-2 text-[11px] font-extrabold uppercase tracking-[0.14em]",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.planned), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2 flex flex-col gap-2"
+  }, planFor(planDay).length === 0 && /*#__PURE__*/React.createElement("p", {
+    className: "text-sm",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.noDay), planFor(planDay).map(function (task) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: task.id,
+      className: "flex items-center gap-3 rounded-2xl p-2",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        setZoomIdx(0);
+        setZoom(task);
+      },
+      className: "h-11 w-11 shrink-0 overflow-hidden rounded-xl transition active:scale-95",
+      style: {
+        background: C.gris
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: src(task),
+      alt: "",
+      className: "h-full w-full object-cover"
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "block text-sm font-bold leading-tight"
+    }, label(task)), /*#__PURE__*/React.createElement("span", {
+      className: "text-[11px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, assignLabel(task))), /*#__PURE__*/React.createElement("span", {
+      className: "rounded-full px-2 py-1 text-[10px] font-extrabold",
+      style: {
+        background: C.gris,
+        color: C.encreDoux
+      }
+    }, momentsOf(task).map(function (m) {
+      return m === "morning" ? t.mMorning : m === "evening" ? t.mEvening : t.mAny;
+    }).join(" · ")));
+  })), isPast(weekOff, planDay) && /*#__PURE__*/React.createElement("div", {
+    className: "mt-6"
+  }, /*#__PURE__*/React.createElement(Titre, {
+    color: C.turquoise
+  }, t.reallyDone), doneOn(weekOff, planDay).length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "text-sm",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.nothingDone) : /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2"
+  }, doneOn(weekOff, planDay).map(function (e) {
+    var p = members.find(function (x) {
+      return x.id === e.memberId;
+    });
+    var task = tasks.find(function (x) {
+      return x.id === e.taskId;
+    });
+    var heure = new Date(e.ts).toLocaleTimeString(lang === "he" ? "he-IL" : lang === "en" ? "en-GB" : "fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+    return /*#__PURE__*/React.createElement("div", {
+      key: e.id,
+      className: "flex items-center gap-3 rounded-2xl p-2",
+      style: {
+        background: C.blanc
+      }
+    }, p && /*#__PURE__*/React.createElement(Avatar, {
+      a: p.avatar,
+      size: 32
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "block text-sm font-bold leading-tight"
+    }, task ? label(task) : "—"), /*#__PURE__*/React.createElement("span", {
+      className: "text-[11px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, p ? p.name : "—", " · ", heure)), /*#__PURE__*/React.createElement("span", {
+      className: "rounded-full px-2.5 py-1 text-[11px] font-extrabold",
+      style: {
+        background: C.turquoise,
+        color: "#fff"
+      }
+    }, "+", e.points));
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "mt-1 text-end text-xs font-extrabold",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.dayTotal, " : ", doneOn(weekOff, planDay).reduce(function (n, e) {
+    return n + e.points;
+  }, 0), " ", t.points))), planWeekly().length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mt-6"
+  }, /*#__PURE__*/React.createElement(Titre, {
+    color: C.orange
+  }, t.weekTasks), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2"
+  }, planWeekly().map(function (task) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: task.id,
+      className: "flex items-center gap-3 rounded-2xl p-2",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        setZoomIdx(0);
+        setZoom(task);
+      },
+      className: "h-11 w-11 shrink-0 overflow-hidden rounded-xl transition active:scale-95",
+      style: {
+        background: C.gris
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: src(task),
+      alt: "",
+      className: "h-full w-full object-cover"
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "block text-sm font-bold leading-tight"
+    }, label(task)), /*#__PURE__*/React.createElement("span", {
+      className: "text-[11px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, assignLabel(task))));
+  })))), tab === "settings" && /*#__PURE__*/React.createElement("section", {
+    className: "mt-5 flex flex-col gap-6"
+  }, members.length > 0 && /*#__PURE__*/React.createElement(Fold, {
+    id: "overview",
+    color: C.violet,
+    title: t.overview
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2"
+  }, _toConsumableArray(members).sort(function (a, b) {
+    return (scores[b.id] || 0) - (scores[a.id] || 0);
+  }).map(function (p) {
+    var idx = members.findIndex(function (m) {
+      return m.id === p.id;
+    });
+    var col = ACCENTS[idx % 3];
+    var v = scores[p.id] || 0;
+    var max = Math.max.apply(Math, [50].concat(_toConsumableArray(members.map(function (x) {
+      return scores[x.id] || 0;
+    }))));
+    var doneN = weekLog.filter(function (e) {
+      return e.memberId === p.id && e.taskId !== "__reward__";
+    }).length;
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.id,
+      className: "rounded-2xl p-3",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: p.avatar,
+      size: 34
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "block font-extrabold leading-tight"
+    }, p.name), /*#__PURE__*/React.createElement("span", {
+      className: "text-[11px] font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, doneN, " ", t.tasksDone)), /*#__PURE__*/React.createElement("span", {
+      className: "rounded-full px-2.5 py-1 text-xs font-extrabold",
+      style: {
+        background: col,
+        color: "#fff"
+      }
+    }, v, " ", t.points)), /*#__PURE__*/React.createElement("div", {
+      className: "mt-2 h-2.5 w-full overflow-hidden rounded-full",
+      style: {
+        background: C.gris
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "h-full rounded-full transition-all",
+      style: {
+        width: `${Math.min(100, v / max * 100)}%`,
+        background: col
+      }
+    })));
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "mt-2 text-[11px]",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.overviewHint)), /*#__PURE__*/React.createElement(Fold, {
+    id: "people",
+    color: C.turquoise,
+    title: t.people
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2"
+  }, members.map(function (p, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.id,
+      className: "flex items-center gap-3 rounded-2xl p-2.5",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: p.avatar,
+      size: 38
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "flex-1 font-bold"
+    }, p.name), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-semibold",
+      style: {
+        color: C.encreDoux
+      }
+    }, p.kind === "child" ? t.child : t.adult), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        setMembers(function (m) {
+          return m.filter(function (x) {
+            return x.id !== p.id;
+          });
+        });
+        if (activeId === p.id) setActiveId(null);
+      },
+      className: "rounded-full px-2.5 py-1 text-xs font-extrabold",
+      style: {
+        background: C.gris,
+        color: C.orange
+      }
+    }, "×"));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 rounded-3xl p-4",
+    style: {
+      background: C.blanc
+    }
+  }, /*#__PURE__*/React.createElement(AvatarPicker, null), /*#__PURE__*/React.createElement("input", {
+    value: draftName,
+    onChange: function onChange(e) {
+      return setDraftName(e.target.value);
+    },
+    placeholder: t.name,
+    className: "mt-3 w-full rounded-2xl px-4 py-3 outline-none",
+    style: {
+      background: C.gris
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2 flex gap-2"
+  }, ["child", "adult"].map(function (k) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: k,
+      onClick: function onClick() {
+        return setDraftKind(k);
+      },
+      className: "flex-1 rounded-2xl py-2 text-sm font-extrabold",
+      style: {
+        background: draftKind === k ? C.encre : C.gris,
+        color: draftKind === k ? "#fff" : C.encreDoux
+      }
+    }, k === "child" ? t.child : t.adult);
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: addMember,
+    className: "mt-2 w-full rounded-2xl py-2.5 font-extrabold",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, t.add))), /*#__PURE__*/React.createElement(Fold, {
+    id: "rewards",
+    color: C.orange,
+    title: t.rewards
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "mb-2 text-[11px]",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.rwHint), rewards.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "mb-3 text-sm",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.rwNone) : /*#__PURE__*/React.createElement("div", {
+    className: "mb-3 flex flex-col gap-2"
+  }, rewards.map(function (r) {
+    var okAll = members.length > 0 && members.every(function (m) {
+      return (r.ok || []).includes(m.id);
+    });
+    var meOk = active ? (r.ok || []).includes(active.id) : false;
+    return /*#__PURE__*/React.createElement("div", {
+      key: r.id,
+      className: "rounded-2xl p-3",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "flex-1 text-[15px] font-bold"
+    }, r.label), /*#__PURE__*/React.createElement("span", {
+      className: "rounded-full px-2.5 py-1 text-xs font-extrabold",
+      style: {
+        background: okAll ? C.turquoise : C.gris,
+        color: okAll ? "#fff" : C.encreDoux
+      }
+    }, r.cost, " ", t.points), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setRewards(function (rs) {
+          return rs.filter(function (x) {
+            return x.id !== r.id;
+          });
+        });
+      },
+      className: "px-1 text-lg font-black",
+      style: {
+        color: C.orange
+      }
+    }, "×")), /*#__PURE__*/React.createElement("div", {
+      className: "mt-2 flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "flex-1 text-[11px] font-bold",
+      style: {
+        color: okAll ? C.turquoise : C.encreDoux
+      }
+    }, okAll ? t.rwReady : `${(r.ok || []).length}/${members.length} ${t.rwAgreed} · ${t.rwPending}`), active && /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setRewards(function (rs) {
+          return rs.map(function (x) {
+            return x.id !== r.id ? x : _objectSpread(_objectSpread({}, x), {}, {
+              ok: meOk ? (x.ok || []).filter(function (y) {
+                return y !== active.id;
+              }) : [].concat(_toConsumableArray(x.ok || []), [active.id])
+            });
+          });
+        });
+      },
+      className: "rounded-full px-3 py-1.5 text-[11px] font-extrabold",
+      style: {
+        background: meOk ? C.turquoise : C.gris,
+        color: meOk ? "#fff" : C.encreDoux
+      }
+    }, meOk ? "✓" : "", " ", t.rwAgree)));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "rounded-3xl p-3",
+    style: {
+      background: C.blanc
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: newRw,
+    onChange: function onChange(e) {
+      return setNewRw(e.target.value);
+    },
+    placeholder: t.rwName,
+    className: "w-full rounded-2xl px-4 py-3 outline-none",
+    style: {
+      background: C.gris
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2 flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-extrabold uppercase tracking-widest",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.rwCost), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-1 gap-1"
+  }, [30, 50, 100, 200].map(function (v) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: v,
+      onClick: function onClick() {
+        return setNewRwCost(v);
+      },
+      className: "flex-1 rounded-lg py-1.5 text-xs font-extrabold",
+      style: {
+        background: newRwCost === v ? C.encre : C.gris,
+        color: newRwCost === v ? "#fff" : C.encreDoux
+      }
+    }, v);
+  }))), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      var n = newRw.trim();
+      if (!n) return;
+      setRewards(function (rs) {
+        return [].concat(_toConsumableArray(rs), [{
+          id: uid(),
+          label: n,
+          cost: newRwCost,
+          by: (active === null || active === void 0 ? void 0 : active.id) || null,
+          ok: active ? [active.id] : []
+        }]);
+      });
+      setNewRw("");
+    },
+    className: "mt-2 w-full rounded-2xl py-3 font-extrabold",
+    style: {
+      background: C.orange,
+      color: "#fff"
+    }
+  }, t.newReward))), /*#__PURE__*/React.createElement(Fold, {
+    id: "history",
+    color: C.violet,
+    title: t.history
+  }, weekLog.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "text-sm",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.nothing) : /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-1.5"
+  }, _toConsumableArray(weekLog).reverse().slice(0, 15).map(function (e) {
+    var p = members.find(function (x) {
+      return x.id === e.memberId;
+    });
+    var isRw = e.taskId === "__reward__";
+    var task = tasks.find(function (x) {
+      return x.id === e.taskId;
+    });
+    if (!p || !task && !isRw) return null;
+    return /*#__PURE__*/React.createElement("div", {
+      key: e.id,
+      className: "flex items-center gap-2 rounded-xl px-3 py-2 text-sm",
+      style: {
+        background: C.blanc
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "flex-1 font-semibold",
+      style: {
+        color: isRw ? C.orange : C.encre
+      }
+    }, isRw ? `🎁 ${e.rewardLabel}` : label(task)), /*#__PURE__*/React.createElement("span", {
+      className: "font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, p.name), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setLog(function (l) {
+          return l.filter(function (x) {
+            return x.id !== e.id;
+          });
+        });
+      },
+      className: "font-bold underline",
+      style: {
+        color: C.orange
+      }
+    }, t.undo));
+  }))), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setLog(function (l) {
+        return l.filter(function (e) {
+          return e.ts < ws;
+        });
+      });
+    },
+    className: "rounded-2xl py-3 text-sm font-extrabold",
+    style: {
+      background: C.orange,
+      color: "#fff"
+    }
+  }, t.resetWeek)))), burst && /*#__PURE__*/React.createElement("div", {
+    className: "pointer-events-none fixed inset-0 z-30 flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ring absolute rounded-full",
+    style: {
+      width: 150,
+      height: 150,
+      border: `6px solid ${burst.color}`
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    className: `drop-${burst.variant} block`
+  }, /*#__PURE__*/React.createElement(Goutte, {
+    color: burst.color,
+    size: 100
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "points-up absolute text-3xl font-black",
+    style: {
+      top: -18,
+      color: burst.color,
+      animationDelay: "420ms",
+      fontFamily: "Nunito, sans-serif"
+    }
+  }, "+", burst.points), [{
+    x: -74,
+    y: -58,
+    s: 26,
+    d: 620
+  }, {
+    x: 70,
+    y: -44,
+    s: 20,
+    d: 700
+  }, {
+    x: -50,
+    y: 62,
+    s: 18,
+    d: 760
+  }, {
+    x: 62,
+    y: 58,
+    s: 24,
+    d: 660
+  }, {
+    x: 0,
+    y: -86,
+    s: 16,
+    d: 820
+  }].map(function (p, i) {
+    return /*#__PURE__*/React.createElement("span", {
+      key: i,
+      className: "sparkle absolute",
+      style: {
+        left: `calc(50% + ${p.x}px)`,
+        top: `calc(50% + ${p.y}px)`,
+        animationDelay: `${p.d}ms`,
+        transform: "translate(-50%,-50%)"
+      }
+    }, /*#__PURE__*/React.createElement("svg", {
+      width: p.s,
+      height: p.s,
+      viewBox: "0 0 24 24",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M12 0 L14.4 9.6 L24 12 L14.4 14.4 L12 24 L9.6 14.4 L0 12 L9.6 9.6 Z",
+      fill: burst.color
+    })));
+  }))), zoom && function () {
+    var list = mediaOf(zoom);
+    var cur = list[zoomIdx];
+    return /*#__PURE__*/React.createElement("div", {
+      className: "fade-in fixed inset-0 z-40 flex items-center justify-center p-6",
+      style: {
+        background: "rgba(16,27,45,.78)"
+      },
+      onClick: function onClick() {
+        setZoom(null);
+        setZoomIdx(0);
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "zoom-in w-full max-w-sm rounded-3xl p-3",
+      style: {
+        background: C.blanc
+      },
+      onClick: function onClick(e) {
+        return e.stopPropagation();
+      }
+    }, cur && cur.type === "video" ? /*#__PURE__*/React.createElement("video", {
+      src: cur.src,
+      className: "block w-full rounded-2xl",
+      controls: true,
+      autoPlay: true,
+      loop: true,
+      playsInline: true,
+      style: {
+        background: "#000"
+      }
+    }) : /*#__PURE__*/React.createElement("img", {
+      src: cur ? cur.src : IMG[zoom.img] || IMG.custom,
+      alt: "",
+      className: "block w-full rounded-2xl"
+    }), list.length > 1 && /*#__PURE__*/React.createElement("div", {
+      className: "mt-2 flex items-center justify-center gap-3"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setZoomIdx(function (n) {
+          return (n - 1 + list.length) % list.length;
+        });
+      },
+      className: "rounded-full px-3 py-1 text-sm font-black",
+      style: {
+        background: C.gris,
+        color: C.encre
+      }
+    }, "‹"), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-extrabold",
+      style: {
+        color: C.encreDoux
+      }
+    }, zoomIdx + 1, " / ", list.length), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setZoomIdx(function (n) {
+          return (n + 1) % list.length;
+        });
+      },
+      className: "rounded-full px-3 py-1 text-sm font-black",
+      style: {
+        background: C.gris,
+        color: C.encre
+      }
+    }, "›")), /*#__PURE__*/React.createElement("p", {
+      className: "mt-3 mb-1 text-center text-lg font-black",
+      style: {
+        fontFamily: "Nunito, Assistant, sans-serif"
+      }
+    }, label(zoom)), /*#__PURE__*/React.createElement("p", {
+      className: "mb-1 text-center text-xs font-bold",
+      style: {
+        color: C.encreDoux
+      }
+    }, assignLabel(zoom), " · ", zoom.points, " ", t.points)));
+  }(), addMenu && /*#__PURE__*/React.createElement("div", {
+    className: "fade-in fixed inset-0 z-40 flex items-end justify-center p-4",
+    style: {
+      background: "rgba(16,27,45,.6)"
+    },
+    onClick: function onClick() {
+      return setAddMenu(false);
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "zoom-in w-full max-w-md rounded-3xl p-4",
+    style: {
+      background: C.blanc
+    },
+    onClick: function onClick(e) {
+      return e.stopPropagation();
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      setAddMenu(false);
+      setLibOpen(true);
+    },
+    className: "w-full rounded-2xl py-4 text-base font-extrabold",
+    style: {
+      background: C.violet,
+      color: "#fff"
+    }
+  }, t.addFromLib), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      var id = uid();
+      setTasks(function (ts) {
+        return [].concat(_toConsumableArray(ts), [{
+          id,
+          img: "custom",
+          points: 10,
+          freq: "daily",
+          days: [],
+          moments: ["any"],
+          assign: "house",
+          label: t.newTask
+        }]);
+      });
+      setAddMenu(false);
+      setTaskView("list");
+      setOpenTask(id);
+    },
+    className: "mt-2 w-full rounded-2xl py-4 text-base font-extrabold",
+    style: {
+      background: C.orange,
+      color: "#fff"
+    }
+  }, t.createTask), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setAddMenu(false);
+    },
+    className: "mt-2 w-full rounded-2xl py-3 text-sm font-extrabold",
+    style: {
+      background: C.gris,
+      color: C.encreDoux
+    }
+  }, t.cancel))), libOpen && /*#__PURE__*/React.createElement("div", {
+    className: "fade-in fixed inset-0 z-40 flex flex-col",
+    style: {
+      background: C.gris
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3 px-4 pb-3 pt-5",
+    style: {
+      background: C.blanc
+    }
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "flex-1 text-lg font-black",
+    style: {
+      fontFamily: "Nunito, Assistant, sans-serif"
+    }
+  }, t.addFromLib), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setLibOpen(false);
+    },
+    className: "rounded-full px-4 py-2 text-sm font-extrabold",
+    style: {
+      background: C.turquoise,
+      color: "#fff"
+    }
+  }, t.close)), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto px-4 pb-8 pt-4"
+  }, CAT_ORDER.map(function (cat) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: cat,
+      className: "mb-5"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em]",
+      style: {
+        color: C.violet
+      }
+    }, CATS[cat][lang]), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col gap-2"
+    }, CATALOG.filter(function (c) {
+      return c.cat === cat;
+    }).map(function (c) {
+      var on = tasks.some(function (x) {
+        return x.id === c.id;
+      });
+      return /*#__PURE__*/React.createElement("div", {
+        key: c.id,
+        className: "flex items-center gap-3 rounded-2xl p-2",
+        style: {
+          background: C.blanc
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "h-12 w-12 shrink-0 overflow-hidden rounded-xl",
+        style: {
+          background: C.gris
+        }
+      }, /*#__PURE__*/React.createElement("img", {
+        src: IMG[c.img],
+        alt: "",
+        className: "h-full w-full object-cover"
+      })), /*#__PURE__*/React.createElement("div", {
+        className: "flex-1"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "block text-[15px] font-bold leading-tight"
+      }, c[lang]), /*#__PURE__*/React.createElement("span", {
+        className: "text-[11px] font-bold",
+        style: {
+          color: C.encreDoux
+        }
+      }, c.freq === "daily" ? t.freqDaily : c.freq === "weekly" ? t.freqWeekly : c.freq === "free" ? t.freqFree : t.freqDays, ` · ${c.points} ${t.points}`)), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          if (on) {
+            setTasks(function (ts) {
+              return ts.filter(function (x) {
+                return x.id !== c.id;
+              });
+            });
+            return;
+          }
+          /* ajoutée : on referme et on ouvre sa fiche pour
+             régler la récurrence tout de suite */
+          setTasks(function (ts) {
+            return [].concat(_toConsumableArray(ts), [fromCatalog(c)]);
+          });
+          setLibOpen(false);
+          setTaskView("list");
+          setOpenTask(c.id);
+        },
+        className: "rounded-full px-4 py-2 text-xs font-extrabold transition active:scale-95",
+        style: {
+          background: on ? C.turquoise : C.gris,
+          color: on ? "#fff" : C.encreDoux
+        }
+      }, on ? "✓" : "+"));
+    })));
+  }))), bonusOpen && active && /*#__PURE__*/React.createElement("div", {
+    className: "fade-in fixed inset-0 z-40 flex flex-col",
+    style: {
+      background: C.gris
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3 px-4 pb-3 pt-5",
+    style: {
+      background: C.blanc
+    }
+  }, /*#__PURE__*/React.createElement(Avatar, {
+    a: active.avatar,
+    size: 36
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-black leading-tight",
+    style: {
+      fontFamily: "Nunito, Assistant, sans-serif"
+    }
+  }, t.bonusTitle), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold",
+    style: {
+      color: C.encreDoux
+    }
+  }, active.name)), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setBonusOpen(false);
+    },
+    className: "rounded-full px-4 py-2 text-sm font-extrabold",
+    style: {
+      background: C.violet,
+      color: "#fff"
+    }
+  }, t.close)), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto px-4 pb-8 pt-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "mb-3 text-[12px]",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.bonusHint), CAT_ORDER.map(function (cat) {
+    var ids = CATALOG.filter(function (c) {
+      return c.cat === cat;
+    }).map(function (c) {
+      return c.id;
+    });
+    var list = tasks.filter(function (k) {
+      return ids.includes(k.id);
+    });
+    if (!list.length) return null;
+    return /*#__PURE__*/React.createElement("div", {
+      key: cat,
+      className: "mb-5"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em]",
+      style: {
+        color: C.violet
+      }
+    }, CATS[cat][lang]), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col gap-2"
+    }, list.map(function (task) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: task.id,
+        className: "flex items-center gap-3 rounded-2xl p-2",
+        style: {
+          background: C.blanc
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "h-12 w-12 shrink-0 overflow-hidden rounded-xl",
+        style: {
+          background: C.gris
+        }
+      }, /*#__PURE__*/React.createElement("img", {
+        src: src(task),
+        alt: "",
+        className: "h-full w-full object-cover"
+      })), /*#__PURE__*/React.createElement("span", {
+        className: "flex-1 text-[15px] font-bold leading-tight"
+      }, label(task)), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          logTask(task, "any", active.id);
+          setBonusOpen(false);
+        },
+        className: "rounded-full px-4 py-2 text-xs font-extrabold transition active:scale-95",
+        style: {
+          background: C.violet,
+          color: "#fff"
+        }
+      }, "+", task.points));
+    })));
+  }), function () {
+    var ids = CATALOG.map(function (c) {
+      return c.id;
+    });
+    var perso = tasks.filter(function (k) {
+      return !ids.includes(k.id);
+    });
+    if (!perso.length) return null;
+    return /*#__PURE__*/React.createElement("div", {
+      className: "mb-5"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em]",
+      style: {
+        color: C.violet
+      }
+    }, t.catalog), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col gap-2"
+    }, perso.map(function (task) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: task.id,
+        className: "flex items-center gap-3 rounded-2xl p-2",
+        style: {
+          background: C.blanc
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "h-12 w-12 shrink-0 overflow-hidden rounded-xl",
+        style: {
+          background: C.gris
+        }
+      }, /*#__PURE__*/React.createElement("img", {
+        src: src(task),
+        alt: "",
+        className: "h-full w-full object-cover"
+      })), /*#__PURE__*/React.createElement("span", {
+        className: "flex-1 text-[15px] font-bold leading-tight"
+      }, label(task)), /*#__PURE__*/React.createElement("button", {
+        onClick: function onClick() {
+          logTask(task, "any", active.id);
+          setBonusOpen(false);
+        },
+        className: "rounded-full px-4 py-2 text-xs font-extrabold transition active:scale-95",
+        style: {
+          background: C.violet,
+          color: "#fff"
+        }
+      }, "+", task.points));
+    })));
+  }())), askWho && /*#__PURE__*/React.createElement("div", {
+    className: "fade-in fixed inset-0 z-40 flex items-end justify-center p-4",
+    style: {
+      background: "rgba(16,27,45,.62)"
+    },
+    onClick: function onClick() {
+      return setAskWho(null);
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "zoom-in w-full max-w-md rounded-3xl p-4",
+    style: {
+      background: C.blanc
+    },
+    onClick: function onClick(e) {
+      return e.stopPropagation();
+    }
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "mb-1 text-center text-base font-black",
+    style: {
+      fontFamily: "Nunito, Assistant, sans-serif"
+    }
+  }, label(askWho.task)), /*#__PURE__*/React.createElement("p", {
+    className: "mb-3 text-center text-sm font-bold",
+    style: {
+      color: C.encreDoux
+    }
+  }, t.whoDidIt), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2"
+  }, members.map(function (p, i) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: p.id,
+      onClick: function onClick() {
+        logTask(askWho.task, askWho.mom, p.id);
+        setAskWho(null);
+      },
+      className: "flex items-center gap-3 rounded-2xl p-2.5 text-start transition active:scale-[.98]",
+      style: {
+        background: C.gris
+      }
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: p.avatar,
+      size: 38
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "flex-1 text-base font-extrabold"
+    }, p.name), /*#__PURE__*/React.createElement("span", {
+      className: "rounded-full px-3 py-1.5 text-xs font-extrabold",
+      style: {
+        background: ACCENTS[i % 3],
+        color: "#fff"
+      }
+    }, "+", askWho.task.points));
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setAskWho(null);
+    },
+    className: "mt-3 w-full rounded-2xl py-3 text-sm font-extrabold",
+    style: {
+      background: C.gris,
+      color: C.encreDoux
+    }
+  }, t.cancel))), /*#__PURE__*/React.createElement("input", {
+    ref: mediaRef,
+    type: "file",
+    accept: "image/*,video/*",
+    multiple: true,
+    onChange: addMedia,
+    style: {
+      display: "none"
+    }
+  }), err && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-x-4 bottom-24 z-40 rounded-2xl px-4 py-3 text-sm font-bold",
+    style: {
+      background: C.orange,
+      color: "#fff"
+    }
+  }, err), step >= 3 && /*#__PURE__*/React.createElement("nav", {
+    className: "fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-md justify-around px-3 pb-4 pt-2",
+    style: {
+      background: `linear-gradient(to top, ${C.gris} 76%, transparent)`
+    }
+  }, [{
+    id: "home",
+    text: t.home,
+    col: C.turquoise
+  }, {
+    id: "tasks",
+    text: t.tasks,
+    col: C.turquoise
+  }, {
+    id: "settings",
+    text: t.settings,
+    col: C.orange
+  }].map(function (s) {
+    var on = tab === s.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: s.id,
+      onClick: function onClick() {
+        return setTab(s.id);
+      },
+      className: "flex flex-1 items-center justify-center rounded-2xl py-2.5 transition",
+      style: {
+        background: on ? s.col : C.blanc,
+        color: on ? "#fff" : C.encreDoux,
+        marginLeft: 3,
+        marginRight: 3
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-[12px] font-extrabold"
+    }, s.text));
+  })));
+
+  /* sélecteur d'avatar : gouttes colorées, figurines, ou photo */
+  function AvatarPicker() {
+    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      className: "mb-2 flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      a: draftAvatar,
+      size: 44
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-1 gap-1.5"
+    }, [["drops", t.drops], ["figures", t.figures], ["photo", t.photo]].map(function (_ref14) {
+      var _ref15 = _slicedToArray(_ref14, 2),
+        k = _ref15[0],
+        lb = _ref15[1];
+      return /*#__PURE__*/React.createElement("button", {
+        key: k,
+        onClick: function onClick() {
+          var _fileRef$current;
+          setAvatarTab(k);
+          if (k === "photo") (_fileRef$current = fileRef.current) === null || _fileRef$current === void 0 || _fileRef$current.click();
+        },
+        className: "flex-1 rounded-xl py-1.5 text-[11px] font-extrabold",
+        style: {
+          background: avatarTab === k ? C.violet : C.gris,
+          color: avatarTab === k ? "#fff" : C.encreDoux
+        }
+      }, lb);
+    }))), /*#__PURE__*/React.createElement("input", {
+      ref: fileRef,
+      type: "file",
+      accept: "image/*",
+      onChange: pickPhoto,
+      style: {
+        display: "none"
+      }
+    }), avatarTab === "drops" && /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap gap-2"
+    }, DROPS.map(function (c) {
+      return /*#__PURE__*/React.createElement("button", {
+        key: c,
+        onClick: function onClick() {
+          return setDraftAvatar({
+            type: "drop",
+            value: c
+          });
+        },
+        className: "rounded-xl p-1",
+        style: {
+          background: C.gris,
+          outline: draftAvatar.value === c ? `2.5px solid ${C.encre}` : "none"
+        }
+      }, /*#__PURE__*/React.createElement(Goutte, {
+        color: c,
+        size: 26
+      }));
+    })), avatarTab === "figures" && /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap gap-2"
+    }, EMOJIS.map(function (e) {
+      return /*#__PURE__*/React.createElement("button", {
+        key: e,
+        onClick: function onClick() {
+          return setDraftAvatar({
+            type: "emoji",
+            value: e
+          });
+        },
+        className: "rounded-xl px-2 py-1 text-2xl",
+        style: {
+          background: C.gris,
+          outline: draftAvatar.value === e ? `2.5px solid ${C.encre}` : "none"
+        }
+      }, e);
+    })), avatarTab === "photo" && /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        var _fileRef$current2;
+        return (_fileRef$current2 = fileRef.current) === null || _fileRef$current2 === void 0 ? void 0 : _fileRef$current2.click();
+      },
+      className: "w-full rounded-2xl py-3 text-sm font-extrabold",
+      style: {
+        background: C.gris,
+        color: C.encreDoux
+      }
+    }, t.photo));
+  }
+}
+
+(function () {
+  var el = document.getElementById('root');
+  try {
+    if (ReactDOM.createRoot) {
+      ReactDOM.createRoot(el).render(React.createElement(App));
+    } else {
+      ReactDOM.render(React.createElement(App), el);
+    }
+  } catch (e) {
+    try { ReactDOM.render(React.createElement(App), el); }
+    catch (e2) { showErr('Montage impossible : ' + e2.message); }
+  }
+})();
+
+</script>
+</body>
+</html>
